@@ -26,6 +26,8 @@ a4_cost_list = []
 a5_option_list = []
 a5_duration_list = []
 a5_cost_list = []
+work_duration_list = []
+idle_time_list = []
 run = 0
 while run != 10:
     #run_number.append(run+1)
@@ -270,6 +272,11 @@ while run != 10:
                     color="#FF8080",
                     depends_of=a4)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    # Total duration estimation
+    work_duration = (a5_start + datetime.timedelta(a5_duration) - a1_start).days
+    working_days = a1_duration + a2_duration + a3_duration + a4_duration + a5_duration
+    idle_time = work_duration - working_days
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # Add time-windows to schedule
     time_windows = gantt.Project(name='Time windows')
     time_windows.add_task(tw1)
@@ -305,13 +312,14 @@ while run != 10:
     a5_option_list.append(a5_x)
     a5_duration_list.append(a5_duration)
     a5_cost_list.append(a5_cost)
+    idle_time_list.append(idle_time)
+    work_duration_list.append(work_duration)
     run = run + 1
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 list = list(zip(a2_option_list, a2_duration_list, a2_cost_list, a3_option_list, a3_duration_list, a3_cost_list, a4_option_list,
-                a4_duration_list, a4_cost_list, a5_option_list, a5_duration_list, a5_cost_list))
-df = pd.DataFrame(list, columns=["a2_berm", "a2_t", "a2_$", "a3_piles", "a3_t", "a3_$", "a4_piers", "a4_t", "a4_$", "a5_girders", "a5_t", "a5_$"])
-#df.to_csv('data.csv')
-#df["a2_t"] = (df["a2_t"] - df["a2_t"].min())/(df["a2_t"].max()-df["a2_t"].min())
+                a4_duration_list, a4_cost_list, a5_option_list, a5_duration_list, a5_cost_list, work_duration_list, idle_time_list))
+df = pd.DataFrame(list, columns=["a2_berm", "a2_t", "a2_$", "a3_piles", "a3_t", "a3_$", "a4_piers", "a4_t", "a4_$", "a5_girders", "a5_t", "a5_$", "total_t", "idle_t"])
+
 # normalized_df=(df-df.min())/(df.max()-df.min())
 df["total_$"] = df["a2_$"] + df["a3_$"] + df["a4_$"] + df["a5_$"]
 df["total_$_norm"] = (df["total_$"] - df["total_$"].min())/(df["total_$"].max()-df["total_$"].min())
