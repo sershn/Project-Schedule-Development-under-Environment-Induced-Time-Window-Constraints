@@ -27,7 +27,7 @@ a5_option_list = []
 a5_duration_list = []
 a5_cost_list = []
 run = 0
-while run != 1:
+while run != 10:
     #run_number.append(run+1)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # TIME-WINDOW WINTER ROAD 2022-2023
@@ -287,11 +287,11 @@ while run != 1:
     schedule.add_task(time_windows)
     schedule.add_task(bridge_side_1)
     # Draw schedule
-    schedule.make_svg_for_tasks(filename='run ' + str(run+1) + '.svg',
-                                today=None,
-                                start=datetime.date(2022, 12, 1),
-                                end=datetime.date(2024, 4, 1),
-                                scale=gantt.DRAW_WITH_DAILY_SCALE)
+    # schedule.make_svg_for_tasks(filename='run ' + str(run+1) + '.svg',
+    #                             today=None,
+    #                             start=datetime.date(2022, 12, 1),
+    #                             end=datetime.date(2024, 4, 1),
+    #                             scale=gantt.DRAW_WITH_DAILY_SCALE)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     a2_option_list.append(a2_x)
     a2_duration_list.append(a2_duration)
@@ -311,5 +311,11 @@ list = list(zip(a2_option_list, a2_duration_list, a2_cost_list, a3_option_list, 
                 a4_duration_list, a4_cost_list, a5_option_list, a5_duration_list, a5_cost_list))
 df = pd.DataFrame(list, columns=["a2_berm", "a2_t", "a2_$", "a3_piles", "a3_t", "a3_$", "a4_piers", "a4_t", "a4_$", "a5_girders", "a5_t", "a5_$"])
 #df.to_csv('data.csv')
+#df["a2_t"] = (df["a2_t"] - df["a2_t"].min())/(df["a2_t"].max()-df["a2_t"].min())
+# normalized_df=(df-df.min())/(df.max()-df.min())
+df["total_$"] = df["a2_$"] + df["a3_$"] + df["a4_$"] + df["a5_$"]
+df["total_$_norm"] = (df["total_$"] - df["total_$"].min())/(df["total_$"].max()-df["total_$"].min())
 print(df.to_string())
+
+
 
