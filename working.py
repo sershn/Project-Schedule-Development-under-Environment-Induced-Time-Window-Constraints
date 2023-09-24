@@ -3,6 +3,7 @@ import gantt
 import math
 import random
 import pandas as pd
+import numpy as np
 pd.set_option('display.max_columns', None)
 # Formatting
 gantt.define_font_attributes(fill='black',
@@ -17,15 +18,19 @@ gantt.define_not_worked_days([])  # list_of_days -- list of integer (0: Monday .
 a2_option_list = []
 a2_duration_list = []
 a2_cost_list = []
+a2_ppl_list = []
 a3_option_list = []
 a3_duration_list = []
 a3_cost_list = []
+a3_ppl_list = []
 a4_option_list = []
 a4_duration_list = []
 a4_cost_list = []
+a3_ppl_list = []
 a5_option_list = []
 a5_duration_list = []
 a5_cost_list = []
+a5_ppl_list = []
 work_duration_list = []
 idle_time_list = []
 run = 0
@@ -94,6 +99,9 @@ while run != 10:
     else:
         a2_crews = math.ceil(a2_initial_duration/a2_allowable_duration)
         a2_duration = math.ceil(a2_quantity / a2_productivity / a2_working_hours / a2_crews)
+    a2_ppl = 0
+    for n in range(len(a2_options[a2_x])):
+        a2_ppl += a2_crews * a2_options[a2_x][n][2]
     a2_cost = a2_crews * a2_duration * a2_working_hours * a2_hourly_cost
     a2_start = a1_start + datetime.timedelta(a1_duration)
     a2_stop = None
@@ -175,14 +183,16 @@ while run != 10:
     C2 = [36.25, 413, 6, 0] # line 03 11 13.85 2750 (p. 57)
     # [output/hr Ton, cost $/hr, workers, equipment, columns reiforc. #8 to #18, potentially add unloading crew C5]
     C4A = [0.15, 165, 2, 0]  # line 03 21 11.60 2750 (p. 71)
+    k = 8 # number of C4A crews
+    C4A_adjusted = list(np.array(C4A) * k)
     # [output/hr CY, cost $/hr, workers, equipment, place concrete with pump, total pump weight lb, pump output 45 CY/hr]
     C20 = [110, 588, 8, 1, 7300, 'Schwing SP 500']  # line 03 31 13.70 5100 (p. 79)
     # [output/hr CY, cost $/hr, workers, equipment, place concrete with crane, total crane weight lb]
     C7 = [90, 716, 9, 1, 77000, 'Challenger 3160 55 Ton']  # line 03 31 13.70 5200 (p. 79)
     # Crew options
     a4_option_1 = [C14A, CARMIX_3500]
-    a4_option_2 = [C2, C4A, C20, CARMIX_3500]
-    a4_option_3 = [C2, C4A, C7, CARMIX_3500]
+    a4_option_2 = [C2, C4A_adjusted, C20, CARMIX_3500]
+    a4_option_3 = [C2, C4A_adjusted, C7, CARMIX_3500]
     a4_options = [a4_option_1, a4_option_2, a4_option_3]
     a4_x = random.randint(0, len(a4_options) - 1)
     a4_working_hours = 8
@@ -194,7 +204,7 @@ while run != 10:
     if len(a4_options[a4_x]) == 2:
         a4_productivity = a4_options[a4_x][0][0]
     else:
-        a4_productivity = a4_quantity/((a4_quantity_SFCA/a4_options[a4_x][0][0] + a4_quantity_Ton/8/a4_options[a4_x][1][0] +
+        a4_productivity = a4_quantity/((a4_quantity_SFCA/a4_options[a4_x][0][0] + a4_quantity_Ton/a4_options[a4_x][1][0] +
                                         a4_quantity/a4_options[a4_x][2][0])/a4_working_hours)/a4_working_hours # manipulate number of crews here
     # Hourly cost
     a4_hourly_cost = 0
@@ -303,9 +313,11 @@ while run != 10:
     a2_option_list.append(a2_x)
     a2_duration_list.append(a2_duration)
     a2_cost_list.append(a2_cost)
+    a2_ppl_list.append(a2_ppl)
     a3_option_list.append(a3_x)
     a3_duration_list.append(a3_duration)
     a3_cost_list.append(a3_cost)
+    a3_ppl_list.append((a3_options[a2_x][0][2] + a2_options[a2_x][1][2] + a2_options[a2_x][2][2]) * a2_crews) #TODO
     a4_option_list.append(a4_x)
     a4_duration_list.append(a4_duration)
     a4_cost_list.append(a4_cost)
@@ -316,9 +328,9 @@ while run != 10:
     work_duration_list.append(work_duration)
     run = run + 1
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-list = list(zip(a2_option_list, a2_duration_list, a2_cost_list, a3_option_list, a3_duration_list, a3_cost_list, a4_option_list,
+list = list(zip(a2_option_list, a2_duration_list, a2_cost_list, a2_ppl_list, a3_option_list, a3_duration_list, a3_cost_list, a4_option_list,
                 a4_duration_list, a4_cost_list, a5_option_list, a5_duration_list, a5_cost_list, work_duration_list, idle_time_list))
-df = pd.DataFrame(list, columns=["a2_berm", "a2_t", "a2_$", "a3_piles", "a3_t", "a3_$", "a4_piers", "a4_t", "a4_$", "a5_girders", "a5_t", "a5_$", "total_t", "idle_t"])
+df = pd.DataFrame(list, columns=["a2_berm", "a2_t", "a2_$", "a2_ppl", "a3_piles", "a3_t", "a3_$", "a4_piers", "a4_t", "a4_$", "a5_girders", "a5_t", "a5_$", "total_t", "idle_t"])
 
 # normalized_df=(df-df.min())/(df.max()-df.min())
 df["total_$"] = df["a2_$"] + df["a3_$"] + df["a4_$"] + df["a5_$"]
