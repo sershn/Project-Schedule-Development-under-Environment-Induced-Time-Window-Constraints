@@ -40,12 +40,14 @@ idle_time_list = []
 ppl_cost = []
 mobilize_cost = []
 run = 0
-while run != 10:
+while run != 1000:
     #run_number.append(run+1)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # TIME-WINDOW WINTER ROAD 2022-2023
-    tw1_start = datetime.date(2022, 12, 20)
-    tw1_stop = datetime.date(2023, 4, 1)
+    tw1_start_rand = random.randint(10, 30)
+    tw1_stop_rand = random.randint(1, 20)
+    tw1_start = datetime.date(2022, 12, tw1_start_rand)
+    tw1_stop = datetime.date(2023, 4, tw1_stop_rand)
     tw1_duration = tw1_stop - tw1_start
     tw1 = gantt.Task(name='tw1_winter_road',
                      start=tw1_start,
@@ -131,6 +133,8 @@ while run != 10:
                     depends_of=a1)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # TIME-WINDOW TEMPERATURE ABOVE ZERO 2023
+    tw2_start_rand = random.randint(5, 25)
+    tw2_stop_rand = random.randint(1, 20)
     tw2_start = datetime.date(2023, 5, 1)
     tw2_stop = datetime.date(2023, 10, 15)
     tw2_duration = tw2_stop - tw2_start
@@ -271,8 +275,10 @@ while run != 10:
                     depends_of=a3)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # TIME-WINDOW WINTER ROAD 2023-2024
-    tw3_start = datetime.date(2023, 12, 20)
-    tw3_stop = datetime.date(2024, 4, 1)
+    tw3_start_rand = random.randint(10, 30)
+    tw3_stop_rand = random.randint(1, 20)
+    tw3_start = datetime.date(2023, 12, tw3_start_rand)
+    tw3_stop = datetime.date(2024, 4, tw3_stop_rand)
     tw3_duration = tw3_stop - tw3_start
     tw3 = gantt.Task(name='tw3_winter_road',
                      start=tw3_start,
@@ -360,7 +366,7 @@ while run != 10:
     #                             today=None,
     #                             start=datetime.date(2022, 12, 1),
     #                             end=datetime.date(2024, 4, 1),
-    #                             scale=gantt.DRAW_WITH_DAILY_SCALE)
+    #                             scale=gantt.DRAW_WITH_WEEKLY_SCALE)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     a2_option_list.append(a2_x)
     a2_duration_list.append(a2_duration)
@@ -409,27 +415,27 @@ time_b = 1 - cost_b
 df["total_t_norm"] = time_a + ((df["total_t"] - df["total_t"].min()) * (time_b - time_a))/(df["total_t"].max()-df["total_t"].min())
 df["reward"] = df["total_$_norm"] + df["total_t_norm"]
 
-print(df.to_string())
+print(df.sort_values("a2_berm").to_string())
 print('Total unique cost scenarious =', df.nunique()["reward"])
 ##
 
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-df_a2_0 = df.loc[df["a2_berm"] == 0, ["a2_t", "a2_$", "total_t", "total_$"]]
-a2_0_time = df_a2_0["total_t"].mean()
-a2_0_cost = df_a2_0["total_$"].mean()
-df_a2_1 = df.loc[df["a2_berm"] == 1, ["a2_t", "a2_$", "total_t", "total_$"]]
-a2_1_time = df_a2_1["total_t"].mean()
-a2_1_cost = df_a2_1["total_$"].mean()
-df_a2_2 = df.loc[df["a2_berm"] == 2, ["a2_t", "a2_$", "total_t", "total_$"]]
-a2_2_time = df_a2_2["total_t"].mean()
-a2_2_cost = df_a2_2["total_$"].mean()
-print(a2_0_time)
-print(a2_0_cost)
-print(a2_1_time)
-print(a2_1_cost)
-print(a2_2_time)
-print(a2_2_cost)
+# df_a2_0 = df.loc[df["a2_berm"] == 0, ["a2_t", "a2_$", "total_t", "total_$"]]
+# a2_0_time = df_a2_0["total_t"].mean()
+# a2_0_cost = df_a2_0["total_$"].mean()
+# df_a2_1 = df.loc[df["a2_berm"] == 1, ["a2_t", "a2_$", "total_t", "total_$"]]
+# a2_1_time = df_a2_1["total_t"].mean()
+# a2_1_cost = df_a2_1["total_$"].mean()
+# df_a2_2 = df.loc[df["a2_berm"] == 2, ["a2_t", "a2_$", "total_t", "total_$"]]
+# a2_2_time = df_a2_2["total_t"].mean()
+# a2_2_cost = df_a2_2["total_$"].mean()
+# print(a2_0_time)
+# print(a2_0_cost)
+# print(a2_1_time)
+# print(a2_1_cost)
+# print(a2_2_time)
+# print(a2_2_cost)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 #print(df.sort_values("a2_berm").to_string())
 
