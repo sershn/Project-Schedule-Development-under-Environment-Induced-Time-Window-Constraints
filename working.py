@@ -13,7 +13,6 @@ gantt.define_font_attributes(fill='black',
                              font_family="Verdana")
 
 gantt.define_not_worked_days([])  # list_of_days -- list of integer (0: Monday ... 6: Sunday) - default [5, 6]
-##
 # DATA MANAGEMENT
 #run_number = []
 a2_option_list = []
@@ -41,7 +40,7 @@ idle_time_list = []
 ppl_cost = []
 mobilize_cost = []
 run = 0
-while run != 100:
+while run != 10:
     #run_number.append(run+1)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # TIME-WINDOW WINTER ROAD 2022-2023
@@ -401,10 +400,21 @@ list = list(zip(a2_option_list, a2_duration_list, a2_cost_list, a2_ppl_list, a2_
 df = pd.DataFrame(list, columns=["a2_berm", "a2_t", "a2_$", "a2_ppl", "a2_weight", "a3_piles", "a3_t", "a3_$", "a3_ppl", "a3_weight", "a4_piers", "a4_t",
                                  "a4_$", "a4_ppl", "a4_weight", "a5_girders", "a5_t", "a5_$", "a5_ppl", "a5_weight", "total_t", "idle_t", "ppl_$", "mobilize_$"])
 
-# normalized_df=(df-df.min())/(df.max()-df.min())
 df["total_$"] = df["a2_$"] + df["a3_$"] + df["a4_$"] + df["a5_$"] + df["ppl_$"] + df["mobilize_$"]
-#df["total_$_norm"] = (df["total_$"] - df["total_$"].min())/(df["total_$"].max()-df["total_$"].min())
-#df_a2 = df[["a2_berm", "a2_t", "a2_$", "total_t", "total_$"]].sort_values("a2_berm")
+cost_a = -0.5
+cost_b = 0.5
+df["total_$_norm"] = cost_a + ((df["total_$"] - df["total_$"].min()) * (cost_b - cost_a))/(df["total_$"].max()-df["total_$"].min())
+time_a = -1 - cost_a
+time_b = 1 - cost_b
+df["total_t_norm"] = time_a + ((df["total_t"] - df["total_t"].min()) * (time_b - time_a))/(df["total_t"].max()-df["total_t"].min())
+df["reward"] = df["total_$_norm"] + df["total_t_norm"]
+
+print(df.to_string())
+print('Total unique cost scenarious =', df.nunique()["reward"])
+##
+
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 df_a2_0 = df.loc[df["a2_berm"] == 0, ["a2_t", "a2_$", "total_t", "total_$"]]
 a2_0_time = df_a2_0["total_t"].mean()
 a2_0_cost = df_a2_0["total_$"].mean()
@@ -420,7 +430,8 @@ print(a2_1_time)
 print(a2_1_cost)
 print(a2_2_time)
 print(a2_2_cost)
-print(df.sort_values("a2_berm").to_string())
-#print('Total unique cost scenarious =', df_a2_0.nunique()["total_$"])
-##
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+#print(df.sort_values("a2_berm").to_string())
+
+
 
