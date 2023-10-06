@@ -1,4 +1,3 @@
-##
 import datetime
 import gantt
 import math
@@ -14,7 +13,6 @@ gantt.define_font_attributes(fill='black',
 
 gantt.define_not_worked_days([])  # list_of_days -- list of integer (0: Monday ... 6: Sunday) - default [5, 6]
 # DATA MANAGEMENT
-#run_number = []
 a2_option_list = []
 a2_duration_list = []
 a2_cost_list = []
@@ -40,7 +38,8 @@ idle_time_list = []
 ppl_cost = []
 mobilize_cost = []
 run = 0
-while run != 1000:
+number_of_runs = 100
+while run != number_of_runs:
     #run_number.append(run+1)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # TIME-WINDOW WINTER ROAD 2022-2023
@@ -97,9 +96,8 @@ while run != 1000:
     a2_quantity = 88752  # BCY
     a2_allowable_duration = tw1_duration.days - a1_duration
     a2_productivity = min(a2_options[a2_x][0][0], a2_options[a2_x][2][0])
-    a2_hourly_cost = (
-            a2_options[a2_x][0][1] + math.ceil(a2_productivity / a2_options[a2_x][1][0] / 1.25) *
-            a2_options[a2_x][1][1] + a2_options[a2_x][2][1])
+    a2_hourly_cost = (a2_options[a2_x][0][1] + math.ceil(a2_productivity / a2_options[a2_x][1][0] / 1.25) *
+                      a2_options[a2_x][1][1] + a2_options[a2_x][2][1])
     a2_initial_duration = a2_quantity / a2_productivity / a2_working_hours
     if a2_initial_duration < a2_allowable_duration:
         a2_crews = 1
@@ -135,8 +133,8 @@ while run != 1000:
     # TIME-WINDOW TEMPERATURE ABOVE ZERO 2023
     tw2_start_rand = random.randint(5, 25)
     tw2_stop_rand = random.randint(1, 20)
-    tw2_start = datetime.date(2023, 5, 1)
-    tw2_stop = datetime.date(2023, 10, 15)
+    tw2_start = datetime.date(2023, 5, tw2_start_rand)
+    tw2_stop = datetime.date(2023, 10, tw2_stop_rand)
     tw2_duration = tw2_stop - tw2_start
     tw2 = gantt.Task(name='tw2_temperature_>0C°',
                      start=tw2_start,
@@ -365,7 +363,7 @@ while run != 1000:
     # schedule.make_svg_for_tasks(filename='run ' + str(run+1) + '.svg',
     #                             today=None,
     #                             start=datetime.date(2022, 12, 1),
-    #                             end=datetime.date(2024, 4, 1),
+    #                             end=datetime.date(2024, 1, 15),
     #                             scale=gantt.DRAW_WITH_WEEKLY_SCALE)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     a2_option_list.append(a2_x)
@@ -415,29 +413,36 @@ time_b = 1 - cost_b
 df["total_t_norm"] = time_a + ((df["total_t"] - df["total_t"].min()) * (time_b - time_a))/(df["total_t"].max()-df["total_t"].min())
 df["reward"] = df["total_$_norm"] + df["total_t_norm"]
 
-print(df.sort_values("a2_berm").to_string())
+if number_of_runs <= 100:
+    print(df.sort_values("a2_berm").to_string())
+print('-----------------------------------------------------------------------')
 print('Total unique cost scenarious =', df.nunique()["reward"])
-##
-
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-# df_a2_0 = df.loc[df["a2_berm"] == 0, ["a2_t", "a2_$", "total_t", "total_$"]]
-# a2_0_time = df_a2_0["total_t"].mean()
-# a2_0_cost = df_a2_0["total_$"].mean()
-# df_a2_1 = df.loc[df["a2_berm"] == 1, ["a2_t", "a2_$", "total_t", "total_$"]]
-# a2_1_time = df_a2_1["total_t"].mean()
-# a2_1_cost = df_a2_1["total_$"].mean()
-# df_a2_2 = df.loc[df["a2_berm"] == 2, ["a2_t", "a2_$", "total_t", "total_$"]]
-# a2_2_time = df_a2_2["total_t"].mean()
-# a2_2_cost = df_a2_2["total_$"].mean()
-# print(a2_0_time)
-# print(a2_0_cost)
-# print(a2_1_time)
-# print(a2_1_cost)
-# print(a2_2_time)
-# print(a2_2_cost)
+# REWARD VALUES FOR EACH OPTION
+print('-----------------------------------------------------------------------')
+a2_average_rewards = []
+for i in range(len(a2_options)):
+    a2_average_rewards.append(df.loc[df["a2_berm"] == i,]["reward"].mean())
+    print('a2_option', i, 'average Long Term Reward =', round(a2_average_rewards[i], 2))
+    a2_productivity = min(a2_options[i][0][0], a2_options[i][2][0])
+    a2_hourly_cost = (a2_options[i][0][1] + math.ceil(a2_productivity / a2_options[i][1][0] / 1.25) * a2_options[i][1][1] + a2_options[i][2][1])
+    a2_unit_cost = a2_hourly_cost/a2_productivity
+    print('a2_option', i, 'unit cost =', round(a2_unit_cost,2), '$/CY')
+
+print('-----------------------------------------------------------------------')
+a3_average_rewards = []
+for i in range(len(a3_options)):
+    a3_average_rewards.append(df.loc[df["a3_piles"] == i,]["reward"].mean())
+    print('a3_option', i, 'average Long Term Reward =', round(a3_average_rewards[i], 2))
+    a3_productivity = a3_options[i][0][0]
+    a3_hourly_cost = 0
+    for j in range(len(a3_options[i])):
+        a3_hourly_cost += a3_options[i][j][1]
+    a3_unit_cost = a3_hourly_cost/a3_productivity
+    print('a3_option', i, 'unit cost =', round(a3_unit_cost,2), '$/VLF')
+print('-----------------------------------------------------------------------')
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-#print(df.sort_values("a2_berm").to_string())
 
 
 
