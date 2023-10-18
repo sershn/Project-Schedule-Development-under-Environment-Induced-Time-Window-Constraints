@@ -405,16 +405,17 @@ df = pd.DataFrame(list, columns=["a2_berm", "a2_t", "a2_$", "a2_ppl", "a2_weight
                                  "a4_$", "a4_ppl", "a4_weight", "a5_girders", "a5_t", "a5_$", "a5_ppl", "a5_weight", "total_t", "idle_t", "ppl_$", "mobilize_$"])
 
 df["total_$"] = df["a2_$"] + df["a3_$"] + df["a4_$"] + df["a5_$"] + df["ppl_$"] + df["mobilize_$"]
-cost_a = -0.5
-cost_b = 0.5
+cost_a = 0.5
+cost_b = 0
 df["total_$_norm"] = cost_a + ((df["total_$"] - df["total_$"].min()) * (cost_b - cost_a))/(df["total_$"].max()-df["total_$"].min())
-time_a = -1 - cost_a
-time_b = 1 - cost_b
+time_a = 1 - cost_a
+time_b = 0 - cost_b
 df["total_t_norm"] = time_a + ((df["total_t"] - df["total_t"].min()) * (time_b - time_a))/(df["total_t"].max()-df["total_t"].min())
 df["reward"] = df["total_$_norm"] + df["total_t_norm"]
 
 if number_of_runs <= 100:
     print(df.sort_values("a2_berm").to_string())
+df.to_csv('data.csv')
 print('-----------------------------------------------------------------------')
 print('Total unique cost scenarious =', df.nunique()["reward"])
 
@@ -424,23 +425,49 @@ print('-----------------------------------------------------------------------')
 a2_average_rewards = []
 for i in range(len(a2_options)):
     a2_average_rewards.append(df.loc[df["a2_berm"] == i,]["reward"].mean())
-    print('a2_option', i, 'average Long Term Reward =', round(a2_average_rewards[i], 2))
+    print('a2_option', i, 'average Long Term Reward =', round(a2_average_rewards[i], 3))
     a2_productivity = min(a2_options[i][0][0], a2_options[i][2][0])
-    a2_hourly_cost = (a2_options[i][0][1] + math.ceil(a2_productivity / a2_options[i][1][0] / 1.25) * a2_options[i][1][1] + a2_options[i][2][1])
-    a2_unit_cost = a2_hourly_cost/a2_productivity
-    print('a2_option', i, 'unit cost =', round(a2_unit_cost,2), '$/CY')
+    a2_hourly_cost = (a2_options[i][0][1] + math.ceil(a2_productivity / a2_options[i][1][0] / 1.25) *
+                      a2_options[i][1][1] + a2_options[i][2][1])
+    print('a2_option', i, 'hourly cost =', round(a2_hourly_cost, 2), '$/hr', 'and', 'productivity =',
+          round(a2_productivity, 2), 'CY/hr')
 
 print('-----------------------------------------------------------------------')
 a3_average_rewards = []
 for i in range(len(a3_options)):
     a3_average_rewards.append(df.loc[df["a3_piles"] == i,]["reward"].mean())
-    print('a3_option', i, 'average Long Term Reward =', round(a3_average_rewards[i], 2))
+    print('a3_option', i, 'average Long Term Reward =', round(a3_average_rewards[i], 3))
     a3_productivity = a3_options[i][0][0]
     a3_hourly_cost = 0
     for j in range(len(a3_options[i])):
         a3_hourly_cost += a3_options[i][j][1]
-    a3_unit_cost = a3_hourly_cost/a3_productivity
-    print('a3_option', i, 'unit cost =', round(a3_unit_cost,2), '$/VLF')
+    print('a3_option', i, 'hourly cost =', round(a3_hourly_cost,2), '$/hr', 'and', 'productivity =', round(a3_productivity,2), 'VLF/hr' )
+print('-----------------------------------------------------------------------')
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+a4_average_rewards = []
+for i in range(len(a4_options)):
+    a4_average_rewards.append(df.loc[df["a4_piers"] == i,]["reward"].mean())
+    print('a4_option', i, 'average Long Term Reward =', round(a4_average_rewards[i], 3))
+    if len(a4_options[i]) == 2:
+        a4_productivity = a4_options[i][0][0]
+    else:
+        a4_productivity = a4_quantity / (
+                    (a4_quantity_SFCA / a4_options[i][0][0] + a4_quantity_Ton / a4_options[i][1][0] +
+                     a4_quantity / a4_options[i][2][0]) / a4_working_hours) / a4_working_hours
+    a4_hourly_cost = 0
+    for j in range(len(a4_options[i])):
+        a4_hourly_cost += a4_options[i][j][1]
+    print('a4_option', i, 'hourly cost =', round(a4_hourly_cost,2), '$/hr', 'and', 'productivity =', round(a4_productivity,2), 'CY/hr' )
+print('-----------------------------------------------------------------------')
+a5_average_rewards = []
+for i in range(len(a5_options)):
+    a5_average_rewards.append(df.loc[df["a5_girders"] == i,]["reward"].mean())
+    print('a5_option', i, 'average Long Term Reward =', round(a5_average_rewards[i], 3))
+    a5_productivity = a5_options[i][0][0]
+    a5_hourly_cost = 0
+    for j in range(len(a5_options[i])):
+        a5_hourly_cost += a5_options[i][j][1]
+    print('a5_option', i, 'hourly cost =', round(a5_hourly_cost,2), '$/hr', 'and', 'productivity =', round(a5_productivity,2), 'VLF/hr' )
 print('-----------------------------------------------------------------------')
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
