@@ -33,12 +33,17 @@ a5_duration_list = []
 a5_cost_list = []
 a5_ppl_list = []
 a5_weight_list = []
+a6_option_list = []
+a6_duration_list = []
+a6_cost_list = []
+a6_ppl_list = []
+a6_weight_list = []
 work_duration_list = []
 idle_time_list = []
 ppl_cost = []
 mobilize_cost = []
 run = 0
-number_of_runs = 100
+number_of_runs = 5
 while run != number_of_runs:
     #run_number.append(run+1)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -96,8 +101,8 @@ while run != number_of_runs:
     a2_quantity = 88752  # BCY
     a2_allowable_duration = tw1_duration.days - a1_duration
     a2_productivity = min(a2_options[a2_x][0][0], a2_options[a2_x][2][0])
-    a2_hourly_cost = (a2_options[a2_x][0][1] + math.ceil(a2_productivity / a2_options[a2_x][1][0] / 1.25) *
-                      a2_options[a2_x][1][1] + a2_options[a2_x][2][1])
+    a2_hourly_cost = (a2_options[a2_x][0][1] + math.ceil(a2_productivity / (a2_options[a2_x][1][0] / 1.25)) *
+                      a2_options[a2_x][1][1] + a2_options[a2_x][2][1]) # 1.25 - bank to loose conversion factor
     a2_initial_duration = a2_quantity / a2_productivity / a2_working_hours
     if a2_initial_duration < a2_allowable_duration:
         a2_crews = 1
@@ -263,7 +268,7 @@ while run != number_of_runs:
     a4_start = tw2_start
     #a3_idle_time = (a4_start - a3_start).days - a3_duration
     a4_stop = None
-    a4 = gantt.Task(name='a4_cast-in-place_piers',
+    a4 = gantt.Task(name='a4_cast-in-place_piers_depends_of_[a3]',
                     start=a4_start,
                     stop=a4_stop,
                     duration=a4_duration,
@@ -338,9 +343,39 @@ while run != number_of_runs:
                     color="#FF8080",
                     depends_of=a4)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    # Grade
+    # [output/hr CCY, cost $/hr, workers, total equipment weight lb, dozer power, CAT model]
+    B10G = [162.5, 269.9, 1.5, 49652, '815 sheep-foot roller'] # line 32 23 23.24 0300 (p. 619)
+    a6_working_hours = 8
+    a6_quantity = 20631  # BCY
+    a6_allowable_duration = tw2_duration.days
+    a6_productivity = a2_productivity
+    a6_hourly_cost = a2_hourly_cost + math.ceil(a6_productivity / (B10G[0] / 0.9)) * B10G[1] # 0.9 - compacted to bank conversion factor
+    a6_duration = math.ceil(a6_quantity / a6_productivity / a6_working_hours)
+    a6_ppl = math.ceil(a6_productivity / (B10G[0] / 0.9)) * math.ceil(B10G[2])
+    a6_equip_weight = B10G[3] * math.ceil(a6_productivity / (B10G[0] / 0.9))
+    # Cost of moving equipment from Hay River to Tulita by Winter road (max speed - 50km/hr, distance 900 km, total of 4.5 days there and back)
+    if a6_equip_weight <= 80000:  # Crew B-34N
+        a6_weight_cost = 4.5 * 1084.52
+    elif 80000 < a6_equip_weight <= 150000:  # Crew B-34K
+        a6_weight_cost = 4.5 * 1516.82
+    else:
+        a6_weight_cost = 4.5 * 1516.82 * math.ceil(a6_equip_weight / 150000)
+    a6_cost = a2_crews * a6_duration * a6_working_hours * a6_hourly_cost
+    a6_start = tw2_start
+    a6_stop = None
+    a6 = gantt.Task(name='a6_abutment_base_depends_of_[a2]',
+                    start=a6_start,
+                    stop=a6_stop,
+                    duration=a6_duration,
+                    percent_done=None,
+                    resources=None,
+                    color="#FF8080",
+                    depends_of=a2)
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
    # Total duration estimation
     work_duration = (a5_start + datetime.timedelta(a5_duration) - a1_start).days
-    working_days = a1_duration + a2_duration + a3_duration + a4_duration + a5_duration
+    working_days = a1_duration + a2_duration + a3_duration + a4_duration + a5_duration # only activities on critical path
     idle_time = work_duration - working_days
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # Add time-windows to schedule
@@ -355,16 +390,18 @@ while run != number_of_runs:
     bridge_side_1.add_task(a3)
     bridge_side_1.add_task(a4)
     bridge_side_1.add_task(a5)
+    bridge_side_1.add_task(a6)
     # Create schedule
     schedule = gantt.Project(name='Mobile cranes method')
     schedule.add_task(time_windows)
     schedule.add_task(bridge_side_1)
     # Draw schedule
-    # schedule.make_svg_for_tasks(filename='run ' + str(run+1) + '.svg',
-    #                             today=None,
-    #                             start=datetime.date(2022, 12, 1),
-    #                             end=datetime.date(2024, 1, 15),
-    #                             scale=gantt.DRAW_WITH_WEEKLY_SCALE)
+    if number_of_runs <= 5:
+        schedule.make_svg_for_tasks(filename='run ' + str(run+1) + '.svg',
+                                today=None,
+                                start=datetime.date(2022, 12, 1),
+                                end=datetime.date(2024, 1, 15),
+                                scale=gantt.DRAW_WITH_WEEKLY_SCALE)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     a2_option_list.append(a2_x)
     a2_duration_list.append(a2_duration)
@@ -386,23 +423,29 @@ while run != number_of_runs:
     a5_cost_list.append(a5_cost)
     a5_ppl_list.append(a5_ppl)
     a5_weight_list.append(a5_equip_weight)
+    a6_option_list.append(a2_x)
+    a6_duration_list.append(a6_duration)
+    a6_cost_list.append(a6_cost)
+    a6_ppl_list.append(a6_ppl)
+    a6_weight_list.append(a6_equip_weight)
     idle_time_list.append(idle_time)
     work_duration_list.append(work_duration)
     mobilize_cost.append(a2_weight_cost + a3_weight_cost + a4_weight_cost + a5_weight_cost)
     run = run + 1
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # Cost of temporary facilities and flight tickets to fly workers in and out
-    if max(a2_ppl, a3_ppl, a4_ppl, a5_ppl) <= 9: # 9 man bunk house trailer $42,900 to buy (p. 17 line 015213.200910)
-        ppl_cost.append(42900 + (a2_ppl + a3_ppl + a4_ppl + a5_ppl) * 21600) # $1080 one way ticket from Yellowknife to Tulita
+    if max(a2_ppl, a3_ppl, a4_ppl, a5_ppl, a6_ppl) <= 9: # 9 man bunk house trailer $42,900 to buy (p. 17 line 015213.200910)
+        ppl_cost.append(42900 + (a2_ppl + a3_ppl + a4_ppl + a5_ppl + a6_ppl) * 2160) # $1080 one way ticket from Yellowknife to Tulita
     else: # 18 man bunk house trailer $55,000 to buy
-        ppl_cost.append(math.ceil(max(a2_ppl, a3_ppl, a4_ppl, a5_ppl)/18) * 55000 + (a2_ppl + a3_ppl + a4_ppl + a5_ppl) * 2160)
-    # Cost of moving equipment from Hay River to Tulita by Winter road (max speed - 50km/hr)
+        ppl_cost.append(math.ceil(max(a2_ppl, a3_ppl, a4_ppl, a5_ppl, a6_ppl)/18) * 55000 + (a2_ppl + a3_ppl + a4_ppl + a5_ppl + a6_ppl) * 2160)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 list = list(zip(a2_option_list, a2_duration_list, a2_cost_list, a2_ppl_list, a2_weight_list, a3_option_list, a3_duration_list, a3_cost_list, a3_ppl_list,
                 a3_weight_list, a4_option_list, a4_duration_list, a4_cost_list, a4_ppl_list, a4_weight_list, a5_option_list, a5_duration_list, a5_cost_list,
-                a5_ppl_list, a5_weight_list, work_duration_list, idle_time_list, ppl_cost, mobilize_cost))
+                a5_ppl_list, a5_weight_list, a6_option_list, a6_duration_list, a6_cost_list,
+                a6_ppl_list, a6_weight_list, work_duration_list, idle_time_list, ppl_cost, mobilize_cost))
 df = pd.DataFrame(list, columns=["a2_berm", "a2_t", "a2_$", "a2_ppl", "a2_weight", "a3_piles", "a3_t", "a3_$", "a3_ppl", "a3_weight", "a4_piers", "a4_t",
-                                 "a4_$", "a4_ppl", "a4_weight", "a5_girders", "a5_t", "a5_$", "a5_ppl", "a5_weight", "total_t", "idle_t", "ppl_$", "mobilize_$"])
+                                 "a4_$", "a4_ppl", "a4_weight", "a5_girders", "a5_t", "a5_$", "a5_ppl", "a5_weight", "a6_abut_base", "a6_t", "a6_$", "a6_ppl",
+                                 "a6_weight", "total_t", "idle_t", "ppl_$", "mobilize_$"])
 
 df["total_$"] = df["a2_$"] + df["a3_$"] + df["a4_$"] + df["a5_$"] + df["ppl_$"] + df["mobilize_$"]
 cost_a = 0.5
@@ -414,7 +457,7 @@ df["total_t_norm"] = time_a + ((df["total_t"] - df["total_t"].min()) * (time_b -
 df["reward"] = df["total_$_norm"] + df["total_t_norm"]
 
 if number_of_runs <= 100:
-    print(df.sort_values("a2_berm").to_string())
+    print(df.to_string())
 df.to_csv('data.csv')
 print('-----------------------------------------------------------------------')
 print('Total unique cost scenarious =', df.nunique()["reward"])
