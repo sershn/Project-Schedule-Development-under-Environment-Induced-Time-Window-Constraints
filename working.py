@@ -5,7 +5,7 @@ import random
 import pandas as pd
 import numpy as np
 import pyprind
-number_of_runs = 9
+number_of_runs = 10000
 pd.set_option('display.max_columns', None)
 # Formatting
 gantt.define_font_attributes(fill='black',
@@ -39,6 +39,7 @@ a1_alternative_2 = [B12D, B34G, B10X]
 a1_alternatives = [a1_alternative_0, a1_alternative_1, a1_alternative_2]
 a9_alternatives = [a1_alternative_0, a1_alternative_1, a1_alternative_2]
 a10_alternatives = [a1_alternative_0, a1_alternative_1, a1_alternative_2]
+a14_alternatives = [a1_alternative_0, a1_alternative_1, a1_alternative_2]
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 '''Abutment base (berm crews plus compaction crew)'''
 # Compact
@@ -81,21 +82,20 @@ C14A = [2.91, 1287, 25, 7300, 'Schwing SP 500 concrete pump']
 C2 = [36.25, 413, 6, 0] # line 03 11 13.85 2750 (p. 57)
 # [output/hr Ton, cost $/hr, workers, columns reiforc. #8 to #18, potentially add unloading crew C5]
 C4A = [0.15, 165, 2, 0]  # line 03 21 11.60 2750 (p. 71)
-k = 8 # number of C4A crews
-C4A_adjusted = list(np.array(C4A) * k)
+C4A_x8 = list(np.array(C4A) * 8) # 8 number of C4A crews
 # [output/hr CY, cost $/hr, workers, total pump weight lb, place concrete with pump, output 45 CY/hr]
 C20 = [110, 588, 8, 7300, 'Schwing SP 500 concrete pump']  # line 03 31 13.70 5100 (p. 79)
 # [output/hr CY, cost $/hr, workers, total crane weight lb, place concrete with crane]
 C7 = [90, 716, 9, 77000, 'Challenger 3160 55 Ton crane']  # line 03 31 13.70 5200 (p. 79)
 # Define alternative methods for a3_cast_in_place_piers
 a3_alternative_0 = [C14A, CARMIX_3500]
-a3_alternative_1 = [C2, C4A_adjusted, C20, CARMIX_3500]
-a3_alternative_2 = [C2, C4A_adjusted, C7, CARMIX_3500]
+a3_alternative_1 = [C2, C4A_x8, C20, CARMIX_3500]
+a3_alternative_2 = [C2, C4A_x8, C7, CARMIX_3500]
 a3_alternatives = [a3_alternative_0, a3_alternative_1, a3_alternative_2]
 # Define alternative methods for a5_cast_in_place_abutment
 a5_alternative_0 = [C14A, CARMIX_3500]
-a5_alternative_1 = [C2, C4A_adjusted, C20, CARMIX_3500]
-a5_alternative_2 = [C2, C4A_adjusted, C7, CARMIX_3500]
+a5_alternative_1 = [C2, C4A_x8, C20, CARMIX_3500]
+a5_alternative_2 = [C2, C4A_x8, C7, CARMIX_3500]
 a5_alternatives = [a5_alternative_0, a5_alternative_1, a5_alternative_2]
 a8_alternatives = [a5_alternative_0, a5_alternative_1, a5_alternative_2]
 a12_alternatives = [a5_alternative_0, a5_alternative_1, a5_alternative_2]
@@ -107,11 +107,22 @@ E5 = [1.61, 1101, 10, 115919, 'TEREX RT 100 90 ton crane']
 # Incremental Launching method
 # [output/hr Ton, cost $/hr, workers, total crane and lunging equipment weight lb] output calculated as 450m bridge/2 =
 # = 225/(25m lunging per week cycle) x 1.152 ton/m weight of girders
-E6 = [2.06, 1653 + 125, 16, 30000 + 115919, 'TEREX RT 100 90 ton crane'] # added $1000 per day for lunging equipment rental cost, and 30k of weight to account for lunging equipment
+E6 = [1.26, 1653 + 125, 16, 30000 + 115919, 'TEREX RT 100 90 ton crane'] # added $1000 per day for lunging equipment rental cost, and 30k of weight to account for lunging equipment
 # Define alternative methods for a6_install_girders
 a6_alternative_0 = [E5]
 a6_alternative_1 = [E6]
 a6_alternatives = [a6_alternative_0, a6_alternative_1]
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''Cast-in-place pier and abutment'''
+# [output/hr SF, cost $/hr, workers, equipment weight]
+C14F = [342, 568, 9, 0,]
+C4A_x5 = list(np.array(C4A) * 5) # 5 number of C4A crews
+C4A_x10 = list(np.array(C4A) * 10) # 10 number of C4A crews
+C2_x3 = list(np.array(C2) * 3) # 3 number of C2 crews
+C2_x6 = list(np.array(C2) * 6) # 6 number of C2 crews
+a15_alternative_0 = [C2_x3, C4A_x5, C14F, CARMIX_3500]
+a15_alternative_1 = [C2_x6, C4A_x10, C14F, CARMIX_3500]
+a15_alternatives = [a15_alternative_0, a15_alternative_1]
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 # NOTES
 # Cost of moving equipment from Hay River to Tulita by Winter road (max speed - 50km/hr, distance 900 km, total of 4.5 days there and back assuming 8 hr/day travel time)
@@ -347,7 +358,7 @@ while run != number_of_runs:
     else: a3_allowable_duration = (tw2_start - tw1_start).days
     # Productivity
     if len(a3_alternatives[a3_x]) == 2: a3_productivity = a3_alternatives[a3_x][0][0]
-    else: a3_productivity = a3_quantity/((a3_quantity_SFCA/a3_alternatives[a3_x][0][0] + a3_quantity_Ton/a3_alternatives[a3_x][1][0] + a3_quantity/a3_alternatives[a3_x][2][0])/a3_working_hours)/a3_working_hours
+    else: a3_productivity = a3_quantity/(a3_quantity_SFCA/a3_alternatives[a3_x][0][0] + a3_quantity_Ton/a3_alternatives[a3_x][1][0] + a3_quantity/a3_alternatives[a3_x][2][0])
     a3_hourly_cost = 0
     for i in range(len(a3_alternatives[a3_x])):
         a3_hourly_cost += a3_alternatives[a3_x][i][1]
@@ -424,8 +435,8 @@ while run != number_of_runs:
     a5_allowable_duration = (tw2_start - a4_stop).days
     # Productivity
     if len(a5_alternatives[a5_x]) == 2: a5_productivity = a5_alternatives[a5_x][0][0]
-    else: a5_productivity = a5_quantity / ((a5_quantity_SFCA / a5_alternatives[a5_x][0][0] + a5_quantity_Ton / a5_alternatives[a5_x][1][0] +
-                                            a5_quantity / a5_alternatives[a5_x][2][0]) / a5_working_hours) / a5_working_hours
+    else: a5_productivity = a5_quantity / (a5_quantity_SFCA / a5_alternatives[a5_x][0][0] + a5_quantity_Ton / a5_alternatives[a5_x][1][0] +
+                                            a5_quantity / a5_alternatives[a5_x][2][0])
     a5_hourly_cost = 0
     for i in range(len(a5_alternatives[a5_x])):
         a5_hourly_cost += a5_alternatives[a5_x][i][1]
@@ -458,15 +469,16 @@ while run != number_of_runs:
                     color="#FF8080",
                     depends_of=a4)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    # INSTALL GIRDERS
-    a6_start = None
+    # INSTALL GIRDERS 1
     a6_working_hours = 8
     if a6_x == 0:
         a6_quantity = 1296 # Imperial ton (half of the bridge)
         a6_crews = 2 # Need minimum 2 crews to install girders with cranes
+        a6_name = 'a6_install_girders_depends_of_[a3, a5]'
     else:
         a6_quantity = 1296 * 2 # Full bridge in case of incremental launching
         a6_crews = 1
+        a6_name = 'a6_install_girders_start_depends_of_[a3, a5]_stop_depends_of_[8, 12]'
     a6_productivity = a6_alternatives[a6_x][0][0]
     a6_hourly_cost = 0
     for i in range(len(a6_alternatives[a6_x])):
@@ -483,8 +495,9 @@ while run != number_of_runs:
     elif 80000 < a6_equip_weight <= 150000: a6_weight_cost = mobilize_duration * B34K_cost
     else: a6_weight_cost = mobilize_duration * B34K_cost * math.ceil(a6_equip_weight/150000)
     a6_cost = a6_crews * a6_duration * a6_working_hours * a6_hourly_cost + a6_ticket_cost + a6_weight_cost
+    a6_start = None
     a6_stop = None
-    a6 = gantt.Task(name='a6_install_girders_depends_of_[a3, a5]',
+    a6 = gantt.Task(name=a6_name,
                     start=a6_start,
                     stop=None,
                     duration=a6_duration,
@@ -723,7 +736,7 @@ while run != number_of_runs:
         a12_start = tw4_start
     else:
         a12_allowable_duration = (tw3_start - a11_stop).days
-        a12_start = None
+        a12_start = a11_stop
     # Productivity
     if len(a12_alternatives[a12_x]) == 2:
         a12_productivity = a12_alternatives[a12_x][0][0]
@@ -755,20 +768,168 @@ while run != number_of_runs:
     else:
         a12_weight_cost = mobilize_duration * B34K_cost * math.ceil(a12_equip_weight / 150000)
     a12_cost = a12_crews * a12_duration * a12_working_hours * a12_hourly_cost + a12_ticket_cost + a12_weight_cost
-    a12_stop = None
+    a12_stop = a12_start + datetime.timedelta(a12_duration)
     a12 = gantt.Task(name='a12_cast-in-place_piers_depends_of_[a11]',
                     start=a12_start,
-                    stop=a12_stop,
+                    stop=None,
                     duration=a12_duration,
                     percent_done=None,
                     resources=None,
                     color="#f4aa80",
                     depends_of=a11)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    # INSTALL GIRDERS 1
+    a13_working_hours = 8
+    if a6_x == 0:
+        a13_x = 0
+        a13_quantity = 1296  # Imperial ton (half of the bridge)
+        a13_crews = 2
+        a13_name = 'a13_install_girders_depends_of_[8, 12]'
+        a13_productivity = a6_alternatives[a6_x][0][0]
+        a13_hourly_cost = 0
+        for i in range(len(a6_alternatives[a6_x])):
+            a13_hourly_cost += a6_alternatives[a6_x][i][1]
+        a13_duration = a13_quantity / a13_productivity / a13_crews / a13_working_hours
+        a13_ppl = 0
+        for n in range(len(a6_alternatives[a6_x])):
+            a13_ppl += a13_crews * math.ceil(a6_alternatives[a6_x][n][2])
+        a13_ticket_cost = a13_ppl * air_ticket_cost * 2
+        a13_equip_weight = 0
+        for m in range(len(a6_alternatives[a6_x])):
+            a13_equip_weight += a13_crews * a6_alternatives[a6_x][m][3]
+        if a13_equip_weight <= 80000:
+            a13_weight_cost = mobilize_duration * B34N_cost
+        elif 80000 < a13_equip_weight <= 150000:
+            a13_weight_cost = mobilize_duration * B34K_cost
+        else:
+            a13_weight_cost = mobilize_duration * B34K_cost * math.ceil(a13_equip_weight / 150000)
+        a13_cost = a13_crews * a13_duration * a13_working_hours * a13_hourly_cost + a13_ticket_cost + a13_weight_cost
+        a13_start = a12_stop
+        a13_stop = a13_start + datetime.timedelta(a13_duration)
+        a13 = gantt.Task(name=a13_name,
+                        start=a13_start,
+                        stop=None,
+                        duration=a13_duration,
+                        percent_done=None,
+                        resources=None,
+                        color="#f4aa80",
+                        depends_of=[a8, a12])
+    else:
+        a13_duration, a13_cost, a13_productivity, a13_crews, a13_x, a13_ppl = 0, 0, 0, 0, 1, 0
+        a13 = gantt.Task(name=' ',
+                        start=tw0_start,
+                        stop=None,
+                        duration=1,
+                        percent_done=None,
+                        resources=None,
+                        color="#FFFFFF")
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    # REMOVE BERM 2
+    a14_x = random.randint(0, len(a14_alternatives) - 1)
+    a14_working_hours = 8
+    a14_quantity = 88752  # BCY
+    if a6_x == 1:  # In case of incremental launching
+        a14_dependence = a12
+        a14_name = 'a14_remove_berm_depends_of_[a12]'
+        a14_allowable_duration = tw3_duration.days
+        a14_start = tw3_start
+    else:
+        a14_dependence = a13
+        a14_name = 'a14_remove_berm_depends_of_[a13]'
+        a14_allowable_duration = (tw5_stop - a13_stop).days
+        a14_start = a13_stop + datetime.timedelta(1)
+    a14_productivity = min(a14_alternatives[a14_x][0][0], a14_alternatives[a14_x][2][0])
+    a14_truck_crews = math.ceil(
+        a14_productivity / (a14_alternatives[a14_x][1][0] / 1.25))  # 1.25 - bank to loose conversion factor
+    a14_hourly_cost = (a14_alternatives[a14_x][0][1] + a14_truck_crews * a14_alternatives[a14_x][1][1] +
+                      a14_alternatives[a14_x][2][1])
+    a14_initial_duration = a14_quantity / a14_productivity / a14_working_hours
+    if a14_initial_duration < a14_allowable_duration:
+        a14_crews = 1
+        a14_duration = math.ceil(a14_initial_duration)
+    else:
+        a14_crews = math.ceil(a14_initial_duration / a14_allowable_duration)
+        a14_duration = math.ceil(a14_quantity / a14_productivity / a14_working_hours / a14_crews)
+    a14_ppl = math.ceil(
+        a14_alternatives[a14_x][0][2] + a14_alternatives[a14_x][1][2] * a14_truck_crews + a14_alternatives[a14_x][2][
+            2]) * a14_crews
+    a14_ticket_cost = a14_ppl * air_ticket_cost * 2
+    a14_equip_weight = math.ceil(
+        a14_alternatives[a14_x][0][3] + a14_alternatives[a14_x][1][3] * a14_truck_crews + a14_alternatives[a14_x][2][
+            3]) * a14_crews
+    if a14_equip_weight <= 80000:  # Crew B-34N
+        a14_weight_cost = mobilize_duration * B34N_cost
+    elif 80000 < a14_equip_weight <= 150000:  # Crew B-34K
+        a14_weight_cost = mobilize_duration * B34K_cost
+    else:
+        a14_weight_cost = mobilize_duration * B34K_cost * math.ceil(a14_equip_weight / 150000)
+    a14_cost = a14_crews * a14_duration * a14_working_hours * a14_hourly_cost + a14_ticket_cost + a14_weight_cost
+    a14_stop = a14_start + datetime.timedelta(a14_duration)
+    a14 = gantt.Task(name=a14_name,
+                    start=a14_start,
+                    stop=None,
+                    duration=a14_duration,
+                    percent_done=None,
+                    resources=None,
+                    color="#f4aa80",
+                    depends_of=a14_dependence)
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    # CAST-IN-PLACE PIERS 1
+    a15_x = random.randint(0, len(a15_alternatives) - 1)
+    a15_working_hours = 8
+    a15_quantity = 72656  # SF
+    a15_quantity_SFCA = 72656 + 2940 + 98  # SFCA of slab bottom plus edges
+    a15_quantity_Ton = 625.9  # Ton
+    if a6_x == 0:
+        a15_allowable_duration = (tw4_stop - a14_stop).days
+        a15_start = a13_stop + datetime.timedelta(1)
+        a15_dependence = a13
+    else:
+        a15_allowable_duration = tw4_duration.days
+        a15_start = tw4_start
+        a15_dependence = a6
+    # Productivity
+    if len(a15_alternatives[a15_x]) == 2:
+        a15_productivity = a15_alternatives[a15_x][0][0]
+    else:
+        a15_productivity = a15_quantity / (a15_quantity_SFCA / a15_alternatives[a15_x][0][0] + a15_quantity_Ton /
+                                           a15_alternatives[a15_x][1][0] + a15_quantity / a15_alternatives[a15_x][2][0])
+    a15_hourly_cost = 0
+    for i in range(len(a15_alternatives[a15_x])):
+        a15_hourly_cost += a15_alternatives[a15_x][i][1]
+    a15_initial_duration = a15_quantity / a15_productivity / a15_working_hours
+    if a15_initial_duration < a15_allowable_duration:
+        a15_crews = 1
+        a15_duration = math.ceil(a15_initial_duration)
+    else:
+        a15_crews = math.ceil(a15_initial_duration / a15_allowable_duration)
+        a15_duration = math.ceil(a15_quantity / a15_productivity / a15_working_hours / a15_crews)
+    a15_ppl = 0
+    for n in range(len(a15_alternatives[a15_x])):
+        a15_ppl += a15_crews * math.ceil(a15_alternatives[a15_x][n][2])
+    a15_ticket_cost = a15_ppl * air_ticket_cost * 2
+    a15_equip_weight = 0
+    for m in range(len(a15_alternatives[a15_x])):
+        a15_equip_weight += a15_crews * a15_alternatives[a15_x][m][3]
+    if a15_equip_weight <= 80000:
+        a15_weight_cost = mobilize_duration * B34N_cost
+    elif 80000 < a15_equip_weight <= 150000:
+        a15_weight_cost = mobilize_duration * B34K_cost
+    else:
+        a15_weight_cost = mobilize_duration * B34K_cost * math.ceil(a15_equip_weight / 150000)
+    a15_cost = a15_crews * a15_duration * a15_working_hours * a15_hourly_cost + a15_ticket_cost + a15_weight_cost
+    a15_stop = a15_start + datetime.timedelta(a15_duration)
+    a15 = gantt.Task(name='a15_cast-in-place_deck_depends_of_[a13]',
+                    start=a15_start,
+                    stop=None,
+                    duration=a15_duration,
+                    percent_done=None,
+                    resources=None,
+                    color="#f4aa80",
+                    depends_of=a15_dependence)
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
    # Total duration estimation
-    work_duration = 0#(a6_start + datetime.timedelta(a6_duration) - a0_start).days #TODO
-    working_days = 0#a0_duration + a1_duration + a2_duration + a3_duration + a6_duration # only activities on critical path
-    idle_time = 0#work_duration - working_days
+    work_duration = (a15_stop - a0_start).days
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # Add time-windows to schedule
     time_windows = gantt.Project(name='Time windows')
@@ -780,7 +941,7 @@ while run != number_of_runs:
     time_windows.add_task(tw5)
     # Add activities to schedule
     bridge_side_1 = gantt.Project(name='Side 1')
-    bridge_side_1.add_task(a0)
+    bridge_side_1.add_task(a0),
     bridge_side_1.add_task(a1)
     bridge_side_1.add_task(a4)
     bridge_side_1.add_task(a5)
@@ -794,9 +955,9 @@ while run != number_of_runs:
     bridge_side_2.add_task(a10)
     bridge_side_2.add_task(a11)
     bridge_side_2.add_task(a12)
-    # bridge_side_2.add_task(a13)
-    # bridge_side_2.add_task(a14)
-    # bridge_side_2.add_task(a15)
+    bridge_side_2.add_task(a13)
+    bridge_side_2.add_task(a14)
+    bridge_side_2.add_task(a15)
     # Create schedule
     schedule = gantt.Project(name='Bridge')
     schedule.add_task(time_windows)
@@ -822,13 +983,21 @@ while run != number_of_runs:
     a10_alternative_list.append(a10_x), a10_duration_list.append(a10_duration), a10_cost_list.append(round(a10_cost, 0)), a10_crews_list.append(a10_crews), a10_prod_list.append(a10_productivity)
     a11_alternative_list.append(a11_x), a11_duration_list.append(a11_duration), a11_cost_list.append(round(a11_cost, 0)), a11_crews_list.append(a11_crews), a11_prod_list.append(a11_productivity)
     a12_alternative_list.append(a12_x), a12_duration_list.append(a12_duration), a12_cost_list.append(round(a12_cost, 0)), a12_crews_list.append(a12_crews), a12_prod_list.append(a12_productivity)
-    idle_time_list.append(idle_time)
+    a13_alternative_list.append(a13_x), a13_duration_list.append(a13_duration), a13_cost_list.append(round(a13_cost, 0)), a13_crews_list.append(a13_crews), a13_prod_list.append(a13_productivity)
+    a14_alternative_list.append(a14_x), a14_duration_list.append(a14_duration), a14_cost_list.append(round(a14_cost, 0)), a14_crews_list.append(a14_crews), a14_prod_list.append(a14_productivity)
+    a15_alternative_list.append(a15_x), a15_duration_list.append(a15_duration), a15_cost_list.append(round(a15_cost, 0)), a15_crews_list.append(a15_crews), a15_prod_list.append(a15_productivity)
     work_duration_list.append(work_duration)
     # Cost of temporary facilities
-    if max(a1_ppl, a2_ppl, a3_ppl+a4_ppl,a3_ppl+a5_ppl, a6_ppl) <= 9: # 9 man bunk house trailer $42,900 to buy (p. 17 line 015213.200910)TODO
+    if a6_x == 0:
+        max_ppl = max(a1_ppl, a2_ppl, a3_ppl + a4_ppl, a3_ppl + a5_ppl, a3_ppl + a7_ppl, a3_ppl + a8_ppl, a14_ppl + a15_ppl,
+            a6_ppl, a9_ppl, a10_ppl, a11_ppl, a12_ppl, a13_ppl)
+    else:
+        max_ppl = max(a1_ppl, a2_ppl, a3_ppl + a4_ppl, a3_ppl + a5_ppl, a3_ppl + a7_ppl, a6_ppl + a8_ppl, a15_ppl,
+                      a6_ppl + a9_ppl, a6_ppl + a10_ppl, a6_ppl + a11_ppl, a6_ppl + a12_ppl, a6_ppl + a13_ppl, a6_ppl + a14_ppl)
+    if max_ppl <= 9:  # 9 man bunk house trailer $42,900 to buy (p. 17 line 015213.200910)TODO
         temp_cost_list.append(42900)
-    else: # 18 man bunk house trailer $55,000 to buy
-        temp_cost_list.append(math.ceil(max(a1_ppl, a2_ppl, a3_ppl+a4_ppl,a3_ppl+a5_ppl, a6_ppl)/18) * 55000)
+    else:  # 18 man bunk house trailer $55,000 to buy
+        temp_cost_list.append(round(max_ppl/ 18* 55000, 0))
     run = run + 1
 print(bar)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -844,11 +1013,14 @@ list = list(zip(a1_alternative_list, a1_duration_list, a1_cost_list, a1_crews_li
                 a10_alternative_list, a10_duration_list, a10_cost_list, a10_crews_list, a10_prod_list,
                 a11_alternative_list, a11_duration_list, a11_cost_list, a11_crews_list, a11_prod_list,
                 a12_alternative_list, a12_duration_list, a12_cost_list, a12_crews_list, a12_prod_list,
-                work_duration_list, idle_time_list, temp_cost_list))
+                a13_alternative_list, a13_duration_list, a13_cost_list, a13_crews_list, a13_prod_list,
+                a14_alternative_list, a14_duration_list, a14_cost_list, a14_crews_list, a14_prod_list,
+                a15_alternative_list, a15_duration_list, a15_cost_list, a15_crews_list, a15_prod_list,
+                work_duration_list, temp_cost_list))
 df = pd.DataFrame(list, columns=["a1_berm", "a1_t", "a1_$", "a1_c", "a1_p",
                                  "a2_piles", "a2_t", "a2_$", "a2_c", "a2_p",
                                  "a3_piers", "a3_t", "a3_$", "a3_c", "a3_p",
-                                 "a4_abutment_base", "a4_t", "a4_$", "a4_c", "a1_p",
+                                 "a4_abutment_base", "a4_t", "a4_$", "a4_c", "a4_p",
                                  "a5_abutment", "a5_t", "a5_$", "a5_c", "a5_p",
                                  "a6_girders", "a6_t", "a6_$", "a6_c", "a6_p",
                                  "a7_abutment_base2", "a7_t", "a7_$", "a7_c", "a7_p",
@@ -857,9 +1029,13 @@ df = pd.DataFrame(list, columns=["a1_berm", "a1_t", "a1_$", "a1_c", "a1_p",
                                  "a10_berm2", "a10_t", "a10_$", "a10_c", "a10_p",
                                  "a11_piles2", "a11_t", "a11_$", "a11_c", "a11_p",
                                  "a12_piers2", "a12_t", "a12_$", "a12_c", "a12_p",
-                                 "total_t", "idle_t", "temp_$"])
+                                 "a13_girders2", "a13_t", "a13_$", "a13_c", "a13_p",
+                                 "a14_remove_berm2", "a14_t", "a14_$", "a14_c", "a14_p",
+                                 "a15_deck", "a15_t", "a15_$", "a15_c", "a15_p",
+                                 "total_t", "temp_$"])
 
-df["total_$"] = df["a1_$"] + df["a2_$"] + df["a3_$"] + df["a4_$"] + df["a5_$"] + df["a6_$"] + df['a7_$'] + df["temp_$"]
+df["total_$"] = round((df["a1_$"] + df["a2_$"] + df["a3_$"] + df["a4_$"] + df["a5_$"] + df["a6_$"] + df['a7_$'] + df['a8_$'] +
+                 df['a9_$'] + df['a10_$'] + df['a11_$'] + df['a12_$'] + df['a13_$'] + df['a14_$'] + df['a15_$'] + df["temp_$"]), 0)
 cost_a = 1
 cost_b = 0
 df["total_$_norm"] = cost_a + ((df["total_$"] - df["total_$"].min()) * (cost_b - cost_a))/(df["total_$"].max()-df["total_$"].min())
@@ -870,88 +1046,151 @@ df["reward"] = df["total_$_norm"]/2 + df["total_t_norm"]/2
 
 if number_of_runs <= 100:
     print(df.to_string())
-# df.to_csv('data.csv')
+#df.to_csv('data.csv')
 print('-----------------------------------------------------------------------')
 print('Unique duration scenarios =', format(df.nunique()["total_t"], ',d'))
 print('Unique cost scenarios =', format(df.nunique()["total_$"], ',d'))
 print('Total unique scenarios =', format(df.nunique()["reward"], ',d'))
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-# REWARD VALUES FOR EACH alternative
+# REWARD VALUES FOR EACH ALTERNATIVE
 print('-----------------------------------------------------------------------')
-a1_average_rewards = []
-
+# a1
 for i in range(len(a1_alternatives)):
-    a1_average_rewards.append(df.loc[df["a1_berm"] == i,]["reward"].mean())
-    a1_productivity = min(a1_alternatives[i][0][0], a1_alternatives[i][2][0])
-    a1_truck_crews = math.ceil(a1_productivity / (a1_alternatives[i][1][0] / 1.25))
-    a1_hourly_cost = (a1_alternatives[i][0][1] + a1_truck_crews * a1_alternatives[i][1][1] + a1_alternatives[i][2][1])
-    print('a1 berm alternative', i, '| average reward =', round(a1_average_rewards[i], 3), '| hourly crew cost =',
-          round(a1_hourly_cost, 2),'$/hr| productivity =', round(a1_productivity, 2), 'CY/hr')
+    a1_average_reward = df.loc[df["a1_berm"] == i,]["reward"].mean()
+    a1_productivity = df.loc[df["a1_berm"] == i,]["a1_p"].mean()
+    a1_average_crews = df.loc[df["a1_berm"] == i,]["a1_c"].mean()
+    a1_daily_cost = df.loc[df["a1_berm"] == i,]["a1_$"].mean()/df.loc[df["a1_berm"] == i,]["a1_c"].mean()/df.loc[df["a1_berm"] == i,]["a1_t"].mean()
+    print('a1_berm alternative', i, '| average reward =', round(a1_average_reward, 2), '| average daily crew cost =',
+          format(int(a1_daily_cost), ',d'),'$/hr| productivity =', round(a1_productivity, 2), 'earth_CY/hr | average crews needed =', round(a1_average_crews, 1))
 print('-----------------------------------------------------------------------')
-a2_average_rewards = []
+# a2
 for i in range(len(a2_alternatives)):
-    a2_average_rewards.append(df.loc[df["a2_piles"] == i,]["reward"].mean())
-    a2_productivity = a2_alternatives[i][0][0]
-    a2_hourly_cost = 0
-    for j in range(len(a2_alternatives[i])):
-        a2_hourly_cost += a2_alternatives[i][j][1]
-    print('a2 piles alternative', i, '| average reward =', round(a2_average_rewards[i], 3), '| hourly crew cost =',
-          round(a2_hourly_cost, 2), '$/hr | productivity =', round(a2_productivity, 2), 'VLF/hr')
+    a2_average_reward = df.loc[df["a2_piles"] == i,]["reward"].mean()
+    a2_productivity = df.loc[df["a2_piles"] == i,]["a2_p"].mean()
+    a2_average_crews = df.loc[df["a2_piles"] == i,]["a2_c"].mean()
+    a2_daily_cost = df.loc[df["a2_piles"] == i,]["a2_$"].mean()/df.loc[df["a2_piles"] == i,]["a2_c"].mean()/df.loc[df["a2_piles"] == i,]["a2_t"].mean()
+    print('a2_piles alternative', i, '| average reward =', round(a2_average_reward, 2), '| average daily crew cost =',
+          format(int(a2_daily_cost), ',d'),'$/hr| productivity =', round(a2_productivity, 2), 'VLF/hr | average crews needed =', round(a2_average_crews, 1))
 print('-----------------------------------------------------------------------')
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-a3_average_rewards = []
+# a3
 for i in range(len(a3_alternatives)):
-    a3_average_rewards.append(df.loc[df["a3_piers"] == i,]["reward"].mean())
-    if len(a3_alternatives[i]) == 2:
-        a3_productivity = a3_alternatives[i][0][0]
-    else:
-        a3_productivity = a3_quantity / (
-                    (a3_quantity_SFCA / a3_alternatives[i][0][0] + a3_quantity_Ton / a3_alternatives[i][1][0] +
-                     a3_quantity / a3_alternatives[i][2][0]) / a3_working_hours) / a3_working_hours
-    a3_hourly_cost = 0
-    for j in range(len(a3_alternatives[i])):
-        a3_hourly_cost += a3_alternatives[i][j][1]
-    print('a3 cast-in piers alternative', i, '| average reward =', round(a3_average_rewards[i], 3), '| hourly crew cost =',
-          round(a3_hourly_cost, 2), '$/hr', '| productivity =', round(a3_productivity, 2), 'CY/hr')
+    a3_average_reward = df.loc[df["a3_piers"] == i,]["reward"].mean()
+    a3_productivity = df.loc[df["a3_piers"] == i,]["a3_p"].mean()
+    a3_average_crews = df.loc[df["a3_piers"] == i,]["a3_c"].mean()
+    a3_daily_cost = df.loc[df["a3_piers"] == i,]["a3_$"].mean()/df.loc[df["a3_piers"] == i,]["a3_c"].mean()/df.loc[df["a3_piers"] == i,]["a3_t"].mean()
+    print('a3_piers alternative', i, '| average reward =', round(a3_average_reward, 2), '| average daily crew cost =',
+          format(int(a3_daily_cost), ',d'),'$/hr| productivity =', round(a3_productivity, 2), 'concrete_CY/hr | average crews needed =', round(a3_average_crews, 1))
 print('-----------------------------------------------------------------------')
-a4_average_rewards = []
+# a4
 for i in range(len(a4_alternatives)):
-    a4_average_rewards.append(df.loc[df["a4_abutment_base"] == i,]["reward"].mean())
-    a4_productivity = min(a4_alternatives[i][0][0], a4_alternatives[i][2][0])
-    a4_truck_crews = math.ceil(a4_productivity / (a4_alternatives[i][1][0] / 1.25))
-    a4_roller_crews = math.ceil(a4_productivity / (a4_alternatives[i][3][0] / 0.9))
-    a4_hourly_cost = ((a4_alternatives[i][0][1] + a4_truck_crews * a4_alternatives[i][1][1] + a4_alternatives[i][2][1]) +
-                      a4_roller_crews * a4_alternatives[i][3][1])
-    print('a4 abutment base alternative', i, '| average reward =', round(a4_average_rewards[i], 3), '| hourly crew cost =',
-          round(a4_hourly_cost, 2), '$/hr', '| productivity =', round(a4_productivity, 2), 'CY/hr')
+    a4_average_reward = df.loc[df["a4_abutment_base"] == i,]["reward"].mean()
+    a4_productivity = df.loc[df["a4_abutment_base"] == i,]["a4_p"].mean()
+    a4_average_crews = df.loc[df["a4_abutment_base"] == i,]["a4_c"].mean()
+    a4_daily_cost = df.loc[df["a4_abutment_base"] == i,]["a4_$"].mean()/df.loc[df["a4_abutment_base"] == i,]["a4_c"].mean()/df.loc[df["a4_abutment_base"] == i,]["a4_t"].mean()
+    print('a4_abutment_base alternative', i, '| average reward =', round(a4_average_reward, 2), '| average daily crew cost =',
+          format(int(a4_daily_cost), ',d'),'$/hr| productivity =', round(a4_productivity, 2), 'earth_CY/hr | average crews needed =', round(a4_average_crews, 1))
 print('-----------------------------------------------------------------------')
-a5_average_rewards = []
+# a5
 for i in range(len(a5_alternatives)):
-    a5_average_rewards.append(df.loc[df["a5_abutment"] == i,]["reward"].mean())
-    if len(a5_alternatives[i]) == 2:
-        a5_productivity = a5_alternatives[i][0][0]
-    else:
-        a5_productivity = a5_quantity / (
-                    (a5_quantity_SFCA / a5_alternatives[i][0][0] + a5_quantity_Ton / a5_alternatives[i][1][0]
-                     + a5_quantity / a5_alternatives[i][2][0]) / a5_working_hours) / a5_working_hours
-    a5_hourly_cost = 0
-    for j in range(len(a5_alternatives[i])):
-        a5_hourly_cost += a5_alternatives[i][j][1]
-    print('a5 cast-in abutment alternative', i, '| average reward =', round(a5_average_rewards[i], 3), '| hourly crew cost =',
-          round(a5_hourly_cost, 2), '$/hr', '| productivity =', round(a5_productivity, 2), 'CY/hr')
+    a5_average_reward = df.loc[df["a5_abutment"] == i,]["reward"].mean()
+    a5_productivity = df.loc[df["a5_abutment"] == i,]["a5_p"].mean()
+    a5_average_crews = df.loc[df["a5_abutment"] == i,]["a5_c"].mean()
+    a5_daily_cost = df.loc[df["a5_abutment"] == i,]["a5_$"].mean()/df.loc[df["a5_abutment"] == i,]["a5_c"].mean()/df.loc[df["a5_abutment"] == i,]["a5_t"].mean()
+    print('a5_abutment alternative', i, '| average reward =', round(a5_average_reward, 2), '| average daily crew cost =',
+          format(int(a5_daily_cost), ',d'),'$/hr| productivity =', round(a5_productivity, 2), 'concrete_CY/hr | average crews needed =', round(a5_average_crews, 1))
 print('-----------------------------------------------------------------------')
-a6_average_rewards = []
+# a6
 for i in range(len(a6_alternatives)):
-    a6_average_rewards.append(df.loc[df["a6_girders"] == i,]["reward"].mean())
-
-    a6_productivity = a6_alternatives[i][0][0]
-    a6_hourly_cost = 0
-    for j in range(len(a6_alternatives[i])):
-        a6_hourly_cost += a6_alternatives[i][j][1]
-    print('a6 girder alternative', i, '| average reward =', round(a6_average_rewards[i], 3),
-          '| hourly crew cost =', round(a6_hourly_cost, 2), '$/hr', '| productivity =', round(a6_productivity, 2), 'Ton/hr')
+    a6_average_reward = df.loc[df["a6_girders"] == i,]["reward"].mean()
+    a6_productivity = df.loc[df["a6_girders"] == i,]["a6_p"].mean()
+    a6_average_crews = df.loc[df["a6_girders"] == i,]["a6_c"].mean()
+    a6_daily_cost = df.loc[df["a6_girders"] == i,]["a6_$"].mean()/df.loc[df["a6_girders"] == i,]["a6_c"].mean()/df.loc[df["a6_girders"] == i,]["a6_t"].mean()
+    print('a6_girders alternative', i, '| average reward =', round(a6_average_reward, 2), '| average daily crew cost =',
+          format(int(a6_daily_cost), ',d'),'$/hr| productivity =', round(a6_productivity, 2), 'Ton/hr | average crews needed =', round(a6_average_crews, 1))
 print('-----------------------------------------------------------------------')
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+# a7
+for i in range(len(a7_alternatives)):
+    a7_average_reward = df.loc[df["a7_abutment_base2"] == i,]["reward"].mean()
+    a7_productivity = df.loc[df["a7_abutment_base2"] == i,]["a7_p"].mean()
+    a7_average_crews = df.loc[df["a7_abutment_base2"] == i,]["a7_c"].mean()
+    a7_daily_cost = df.loc[df["a7_abutment_base2"] == i,]["a7_$"].mean()/df.loc[df["a7_abutment_base2"] == i,]["a7_c"].mean()/df.loc[df["a7_abutment_base2"] == i,]["a7_t"].mean()
+    print('a7_abutment_base2 alternative', i, '| average reward =', round(a7_average_reward, 2), '| average daily crew cost =',
+          format(int(a7_daily_cost), ',d'),'$/hr| productivity =', round(a7_productivity, 2), 'earth_CY/hr | average crews needed =', round(a7_average_crews, 1))
+print('-----------------------------------------------------------------------')
+# a8
+for i in range(len(a8_alternatives)):
+    a8_average_reward = df.loc[df["a8_abutment2"] == i,]["reward"].mean()
+    a8_productivity = df.loc[df["a8_abutment2"] == i,]["a8_p"].mean()
+    a8_average_crews = df.loc[df["a8_abutment2"] == i,]["a8_c"].mean()
+    a8_daily_cost = df.loc[df["a8_abutment2"] == i,]["a8_$"].mean()/df.loc[df["a8_abutment2"] == i,]["a8_c"].mean()/df.loc[df["a8_abutment2"] == i,]["a8_t"].mean()
+    print('a8_abutment2 alternative', i, '| average reward =', round(a8_average_reward, 2), '| average daily crew cost =',
+          format(int(a8_daily_cost), ',d'),'$/hr| productivity =', round(a8_productivity, 2), 'concrete_CY/hr | average crews needed =', round(a8_average_crews, 1))
+print('-----------------------------------------------------------------------')
+# a9
+for i in range(len(a9_alternatives)):
+    a9_average_reward = df.loc[df["a9_remove_berm"] == i,]["reward"].mean()
+    a9_productivity = df.loc[df["a9_remove_berm"] == i,]["a9_p"].mean()
+    a9_average_crews = df.loc[df["a9_remove_berm"] == i,]["a9_c"].mean()
+    a9_daily_cost = df.loc[df["a9_remove_berm"] == i,]["a9_$"].mean()/df.loc[df["a9_remove_berm"] == i,]["a9_c"].mean()/df.loc[df["a9_remove_berm"] == i,]["a9_t"].mean()
+    print('a9_remove_berm alternative', i, '| average reward =', round(a9_average_reward, 2), '| average daily crew cost =',
+          format(int(a9_daily_cost), ',d'),'$/hr| productivity =', round(a9_productivity, 2), 'earth_CY/hr | average crews needed =', round(a9_average_crews, 1))
+print('-----------------------------------------------------------------------')
+# a10
+for i in range(len(a10_alternatives)):
+    a10_average_reward = df.loc[df["a10_berm2"] == i,]["reward"].mean()
+    a10_productivity = df.loc[df["a10_berm2"] == i,]["a10_p"].mean()
+    a10_average_crews = df.loc[df["a10_berm2"] == i,]["a10_c"].mean()
+    a10_daily_cost = df.loc[df["a10_berm2"] == i,]["a10_$"].mean()/df.loc[df["a10_berm2"] == i,]["a10_c"].mean()/df.loc[df["a10_berm2"] == i,]["a10_t"].mean()
+    print('a10_berm2 alternative', i, '| average reward =', round(a10_average_reward, 2), '| average daily crew cost =',
+          format(int(a10_daily_cost), ',d'),'$/hr| productivity =', round(a10_productivity, 2), 'earth_CY/hr | average crews needed =', round(a10_average_crews, 1))
+print('-----------------------------------------------------------------------')
+# a11
+for i in range(len(a11_alternatives)):
+    a11_average_reward = df.loc[df["a11_piles2"] == i,]["reward"].mean()
+    a11_productivity = df.loc[df["a11_piles2"] == i,]["a11_p"].mean()
+    a11_average_crews = df.loc[df["a11_piles2"] == i,]["a11_c"].mean()
+    a11_daily_cost = df.loc[df["a11_piles2"] == i,]["a11_$"].mean()/df.loc[df["a11_piles2"] == i,]["a11_c"].mean()/df.loc[df["a11_piles2"] == i,]["a11_t"].mean()
+    print('a11_piles2 alternative', i, '| average reward =', round(a11_average_reward, 2), '| average daily crew cost =',
+          format(int(a11_daily_cost), ',d'),'$/hr| productivity =', round(a11_productivity, 2), 'VLF/hr | average crews needed =', round(a11_average_crews, 1))
+print('-----------------------------------------------------------------------')
+# a12
+for i in range(len(a12_alternatives)):
+    a12_average_reward = df.loc[df["a12_piers2"] == i,]["reward"].mean()
+    a12_productivity = df.loc[df["a12_piers2"] == i,]["a12_p"].mean()
+    a12_average_crews = df.loc[df["a12_piers2"] == i,]["a12_c"].mean()
+    a12_daily_cost = df.loc[df["a12_piers2"] == i,]["a12_$"].mean()/df.loc[df["a12_piers2"] == i,]["a12_c"].mean()/df.loc[df["a12_piers2"] == i,]["a12_t"].mean()
+    print('a12_piers2 alternative', i, '| average reward =', round(a12_average_reward, 2), '| average daily crew cost =',
+          format(int(a12_daily_cost), ',d'),'$/hr| productivity =', round(a12_productivity, 2), 'concrete_CY/hr | average crews needed =', round(a12_average_crews, 1))
+print('-----------------------------------------------------------------------')
+# a13
+for i in range(len(a6_alternatives)):
+    a13_average_reward = df.loc[df["a13_girders2"] == i,]["reward"].mean()
+    a13_productivity = df.loc[df["a13_girders2"] == i,]["a13_p"].mean()
+    a13_average_crews = df.loc[df["a13_girders2"] == i,]["a13_c"].mean()
+    if i == 0:
+        a13_daily_cost = df.loc[df["a13_girders2"] == i,]["a13_$"].mean()/df.loc[df["a13_girders2"] == i,]["a13_c"].mean()/df.loc[df["a13_girders2"] == i,]["a13_t"].mean()
+    else: a13_daily_cost = 0
+    print('a13_girders2 alternative', i, '| average reward =', round(a13_average_reward, 2), '| average daily crew cost =',
+          format(int(a13_daily_cost), ',d'),'$/hr| productivity =', round(a13_productivity, 2), 'Ton/hr | average crews needed =', round(a13_average_crews, 1))
+print('-----------------------------------------------------------------------')
+# a14
+for i in range(len(a14_alternatives)):
+    a14_average_reward = df.loc[df["a14_remove_berm2"] == i,]["reward"].mean()
+    a14_productivity = df.loc[df["a14_remove_berm2"] == i,]["a14_p"].mean()
+    a14_average_crews = df.loc[df["a14_remove_berm2"] == i,]["a14_c"].mean()
+    a14_daily_cost = df.loc[df["a14_remove_berm2"] == i,]["a14_$"].mean()/df.loc[df["a14_remove_berm2"] == i,]["a14_c"].mean()/df.loc[df["a14_remove_berm2"] == i,]["a14_t"].mean()
+    print('a14_remove_berm2 alternative', i, '| average reward =', round(a14_average_reward, 2), '| average daily crew cost =',
+          format(int(a14_daily_cost), ',d'),'$/hr| productivity =', round(a14_productivity, 2), 'earth_CY/hr | average crews needed =', round(a14_average_crews, 1))
+print('-----------------------------------------------------------------------')
+# a15
+for i in range(len(a15_alternatives)):
+    a15_average_reward = df.loc[df["a15_deck"] == i,]["reward"].mean()
+    a15_productivity = df.loc[df["a15_deck"] == i,]["a15_p"].mean()
+    a15_average_crews = df.loc[df["a15_deck"] == i,]["a15_c"].mean()
+    a15_daily_cost = df.loc[df["a15_deck"] == i,]["a15_$"].mean()/df.loc[df["a15_deck"] == i,]["a15_c"].mean()/df.loc[df["a15_deck"] == i,]["a15_t"].mean()
+    print('a15_deck alternative', i, '| average reward =', round(a15_average_reward, 2), '| average daily crew cost =',
+          format(int(a15_daily_cost), ',d'),'$/hr| productivity =', round(a15_productivity, 2), 'concrete_SF/hr | average crews needed =', round(a15_average_crews, 1))
+print('-----------------------------------------------------------------------')
 
 
 
