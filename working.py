@@ -235,9 +235,9 @@ alt_2 = [0,1]
 combinations = list(itertools.product(alt_3,alt_3,alt_3,alt_3,alt_3,alt_2,alt_3,alt_3,alt_3,alt_3,alt_3,alt_3,alt_3,alt_2))
 run = 0
 number_of_runs = 0
-mode = 0 # "0" for Monte Carlo; "1" for Enumerated; "2" for Deterministic
+mode = 2 # "0" for Monte Carlo; "1" for Enumerated; "2" for Deterministic
 if mode == 0:
-    number_of_runs = 2125
+    number_of_runs = 21
 elif mode == 1:
     number_of_runs = len(combinations)
 elif mode == 2:
@@ -282,15 +282,15 @@ for iter in range(number_of_runs):
         a2_x = 0
         a3_x = 0
         a4_x = 2
-        a5_x = 1
+        a5_x = 2
         a6_x = 1
-        a7_x = 2
-        a8_x = 1
+        a7_x = 1
+        a8_x = 0
         a9_x = 2
         a10_x = 2
-        a11_x = 0
-        a12_x = 0
-        a14_x = 2
+        a11_x = 1
+        a12_x = 1
+        a14_x = 1
         a15_x = 1
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # MOBILIZE JOB SITE
