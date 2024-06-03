@@ -235,9 +235,11 @@ alt_2 = [0,1]
 combinations = list(itertools.product(alt_3,alt_3,alt_3,alt_3,alt_3,alt_2,alt_3,alt_3,alt_3,alt_3,alt_3,alt_3,alt_3,alt_2))
 run = 0
 number_of_runs = 0
-mode = 2 # "0" for Monte Carlo; "1" for Enumerated; "2" for Deterministic
+mode = 0 # "0" for Monte Carlo
+         # "1" for Enumerated
+         # "2" for Deterministic
 if mode == 0:
-    number_of_runs = 21
+    number_of_runs =  85030560
 elif mode == 1:
     number_of_runs = len(combinations)
 elif mode == 2:
@@ -1030,6 +1032,7 @@ for iter in range(number_of_runs):
         temp_cost_list.append(round(max_ppl/ 18* 55000, 0))
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 print('Simulation is complete')
+print('Starting computation of results')
 list = list(zip(a1_alternative_list, a1_duration_list, a1_cost_list, a1_crews_list, a1_prod_list,
                 a2_alternative_list, a2_duration_list, a2_cost_list, a2_crews_list, a2_prod_list,
                 a3_alternative_list, a3_duration_list, a3_cost_list, a3_crews_list, a3_prod_list,
