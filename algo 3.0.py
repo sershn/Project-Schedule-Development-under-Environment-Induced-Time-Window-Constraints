@@ -1,7 +1,8 @@
-number_of_MC_runs = 1000000
+number_of_MC_runs = 100000
 mode = 0 # "0" for Monte Carlo
          # "1" for Enumerated
          # "2" for Deterministic
+schedules_to_print = 10
 import itertools
 import datetime
 import gantt
@@ -127,85 +128,6 @@ C2_x6 = list(np.array(C2) * 6) # 6 number of C2 crews
 a15_alternative_0 = [C2_x3, C4A_x5, C14F, CARMIX_3500]
 a15_alternative_1 = [C2_x6, C4A_x10, C14F, CARMIX_3500]
 a15_alternatives = [a15_alternative_0, a15_alternative_1]
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'''TIME-WINDOWS'''
-# TIME-WINDOW WINTER ROAD 2022-2023
-tw0_start = datetime.date(2022, 12, 20)
-tw0_stop = datetime.date(2023, 4, 1)
-tw0_duration = tw0_stop - tw0_start
-tw0 = gantt.Task(name='tw0_winter_road',
-                 start=tw0_start,
-                 stop=tw0_stop,
-                 duration=None,
-                 percent_done=None,
-                 resources=None,
-                 color="#ADD8E6",
-                 depends_of=None)
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-# TIME-WINDOW TEMPERATURE ABOVE ZERO 2023
-tw1_start = datetime.date(2023, 5, 1)
-tw1_stop = datetime.date(2023, 10, 15)
-tw1_duration = tw1_stop - tw1_start
-tw1 = gantt.Task(name='tw1_temperature_>0C°',
-                 start=tw1_start,
-                 stop=tw1_stop,
-                 duration=None,
-                 percent_done=None,
-                 resources=None,
-                 color="#ADD8E6",
-                 depends_of=None)
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-# TIME-WINDOW IN-RIVER ACTIVITY 2023
-tw2_start = datetime.date(2023, 7, 16)
-tw2_stop = datetime.date(2023, 9, 14)
-tw2_duration = tw2_stop - tw2_start
-tw2 = gantt.Task(name='tw2_in_river_activity',
-                 start=tw2_start,
-                 stop=tw2_stop,
-                 duration=None,
-                 percent_done=None,
-                 resources=None,
-                 color="#ADD8E6",
-                 depends_of=None)
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-# TIME-WINDOW WINTER ROAD 2023-2024
-tw3_start = datetime.date(2023, 12, 20)
-tw3_stop = datetime.date(2024, 4, 1)
-tw3_duration = tw3_stop - tw3_start
-tw3 = gantt.Task(name='tw3_winter_road',
-                 start=tw3_start,
-                 stop=tw3_stop,
-                 duration=None,
-                 percent_done=None,
-                 resources=None,
-                 color="#ADD8E6",
-                 depends_of=None)
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-# TIME-WINDOW TEMPERATURE ABOVE ZERO 2024
-tw4_start = datetime.date(2024, 5, 1)
-tw4_stop = datetime.date(2024, 10, 15)
-tw4_duration = tw4_stop - tw4_start
-tw4 = gantt.Task(name='tw4_temperature_>0C°',
-                 start=tw4_start,
-                 stop=tw4_stop,
-                 duration=None,
-                 percent_done=None,
-                 resources=None,
-                 color="#ADD8E6",
-                 depends_of=None)
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-# TIME-WINDOW IN-RIVER ACTIVITY 2024
-tw5_start = datetime.date(2024, 7, 16)
-tw5_stop = datetime.date(2024, 9, 14)
-tw5_duration = tw5_stop - tw5_start
-tw5 = gantt.Task(name='tw5_in_river_activity',
-                 start=tw5_start,
-                 stop=tw5_stop,
-                 duration=None,
-                 percent_done=None,
-                 resources=None,
-                 color="#ADD8E6",
-                 depends_of=None)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 # NOTES
 # Cost of moving equipment from Hay River to Tulita by Winter road (max speed - 50km/hr, distance 900 km, total of 4.5 days there and back assuming 8 hr/day travel time)
@@ -215,25 +137,6 @@ B34K_cost = 1516.82 # $/hr
 # Ticket from Hay River to Tulita one way - $1255 (Hay River - Yellowknife - Tulita)
 air_ticket_cost = 1255
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-# EMPTY LISTS FOR DATA MANAGEMENT
-a1_alternative_list, a1_duration_list, a1_cost_list, a1_crews_list, a1_prod_list = [], [], [], [], []
-a2_alternative_list, a2_duration_list, a2_cost_list, a2_crews_list, a2_prod_list = [], [], [], [], []
-a3_alternative_list, a3_duration_list, a3_cost_list, a3_crews_list, a3_prod_list = [], [], [], [], []
-a4_alternative_list, a4_duration_list, a4_cost_list, a4_crews_list, a4_prod_list = [], [], [], [], []
-a5_alternative_list, a5_duration_list, a5_cost_list, a5_crews_list, a5_prod_list = [], [], [], [], []
-a6_alternative_list, a6_duration_list, a6_cost_list, a6_crews_list, a6_prod_list = [], [], [], [], []
-a7_alternative_list, a7_duration_list, a7_cost_list, a7_crews_list, a7_prod_list = [], [], [], [], []
-a8_alternative_list, a8_duration_list, a8_cost_list, a8_crews_list, a8_prod_list = [], [], [], [], []
-a9_alternative_list, a9_duration_list, a9_cost_list, a9_crews_list, a9_prod_list = [], [], [], [], []
-a10_alternative_list, a10_duration_list, a10_cost_list, a10_crews_list, a10_prod_list = [], [], [], [], []
-a11_alternative_list, a11_duration_list, a11_cost_list, a11_crews_list, a11_prod_list = [], [], [], [], []
-a12_alternative_list, a12_duration_list, a12_cost_list, a12_crews_list, a12_prod_list = [], [], [], [], []
-a13_alternative_list, a13_duration_list, a13_cost_list, a13_crews_list, a13_prod_list = [], [], [], [], []
-a14_alternative_list, a14_duration_list, a14_cost_list, a14_crews_list, a14_prod_list = [], [], [], [], []
-a15_alternative_list, a15_duration_list, a15_cost_list, a15_crews_list, a15_prod_list = [], [], [], [], []
-work_duration_list = []
-idle_time_list = []
-temp_cost_list = []
 # SIMULATION SETTINGS
 alt_3 = [0,1,2]
 alt_2 = [0,1]
@@ -251,8 +154,54 @@ elif mode == 2:
     print('Deterministic')
 print('Running', format(number_of_runs, ',d'), 'combinations')
 bar = pyprind.ProgBar(number_of_runs, monitor=True, bar_char='■')
+a1_r1, a1_o1, a1_r2, a1_o2, a1_r3, a1_o3 = 0,0,0,0,0,0
+a2_r1, a2_o1, a2_r2, a2_o2, a2_r3, a2_o3 = 0,0,0,0,0,0
+a3_r1, a3_o1, a3_r2, a3_o2, a3_r3, a3_o3 = 0,0,0,0,0,0
+a4_r1, a4_o1, a4_r2, a4_o2, a4_r3, a4_o3 = 0,0,0,0,0,0
+a5_r1, a5_o1, a5_r2, a5_o2, a5_r3, a5_o3 = 0,0,0,0,0,0
+a6_r1, a6_o1, a6_r2, a6_o2, a6_r3, a6_o3 = 0,0,0,0,0,0
+a7_r1, a7_o1, a7_r2, a7_o2, a7_r3, a7_o3 = 0,0,0,0,0,0
+a8_r1, a8_o1, a8_r2, a8_o2, a8_r3, a8_o3 = 0,0,0,0,0,0
+a9_r1, a9_o1, a9_r2, a9_o2, a9_r3, a9_o3 = 0,0,0,0,0,0
+a10_r1, a10_o1, a10_r2, a10_o2, a10_r3, a10_o3 = 0,0,0,0,0,0
+a11_r1, a11_o1, a11_r2, a11_o2, a11_r3, a11_o3 = 0,0,0,0,0,0
+a12_r1, a12_o1, a12_r2, a12_o2, a12_r3, a12_o3 = 0,0,0,0,0,0
+a14_r1, a14_o1, a14_r2, a14_o2, a14_r3, a14_o3 = 0,0,0,0,0,0
+a15_r1, a15_o1, a15_r2, a15_o2, a15_r3, a15_o3 = 0,0,0,0,0,0
+
 for iter in range(number_of_runs):
-    bar.update() # progress update
+    bar.update()  # progress update
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    '''TIME-WINDOWS'''
+    # TIME-WINDOW WINTER ROAD 2022-2023
+    tw0_start = datetime.date(2022, 12, random.randint(20, 25))
+    tw0_stop = datetime.date(2023, 4, random.randint(1, 5))
+    tw0_duration = tw0_stop - tw0_start
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    # TIME-WINDOW TEMPERATURE ABOVE ZERO 2023
+    tw1_start = datetime.date(2023, 5, random.randint(1, 5))
+    tw1_stop = datetime.date(2023, 10, random.randint(15, 20))
+    tw1_duration = tw1_stop - tw1_start
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    # TIME-WINDOW IN-RIVER ACTIVITY 2023
+    tw2_start = datetime.date(2023, 7, 16)
+    tw2_stop = datetime.date(2023, 9, 14)
+    tw2_duration = tw2_stop - tw2_start
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    # TIME-WINDOW WINTER ROAD 2023-2024
+    tw3_start = datetime.date(2023, 12, random.randint(20, 25))
+    tw3_stop = datetime.date(2024, 4, random.randint(1, 5))
+    tw3_duration = tw3_stop - tw3_start
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    # TIME-WINDOW TEMPERATURE ABOVE ZERO 2024
+    tw4_start = datetime.date(2024, 5, random.randint(1, 5))
+    tw4_stop = datetime.date(2024, 10, random.randint(15, 20))
+    tw4_duration = tw4_stop - tw4_start
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    # TIME-WINDOW IN-RIVER ACTIVITY 2024
+    tw5_start = datetime.date(2024, 7, 16)
+    tw5_stop = datetime.date(2024, 9, 14)
+    tw5_duration = tw5_stop - tw5_start
     if mode == 0:
         a1_x = random.randint(0, len(a1_alternatives) - 1)
         a2_x = random.randint(0, len(a2_alternatives) - 1)
@@ -304,17 +253,8 @@ for iter in range(number_of_runs):
     a0_start = tw0_start
     a0_stop = None
     a0_duration = random.randint(30,30)#tw0_2023_duration.days/2
-    a0 = gantt.Task(name='a0_mobilize_job_site',
-                    start=a0_start,
-                    stop=a0_stop,
-                    duration=a0_duration,
-                    percent_done=None,
-                    resources=None,
-                    color="#FF8080",
-                    depends_of=None)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # BUILD BERM 1
-    #a1_x = random.randint(0,len(a1_alternatives)-1)
     a1_working_hours = 8
     a1_quantity = 88752  # BCY
     a1_allowable_duration = tw0_duration.days - a0_duration
@@ -337,17 +277,8 @@ for iter in range(number_of_runs):
     a1_cost = a1_crews * a1_duration * a1_working_hours * a1_hourly_cost + a1_ticket_cost + a1_weight_cost
     a1_start = a0_start + datetime.timedelta(a0_duration)
     a1_stop = None
-    a1 = gantt.Task(name='a1_build_berm',
-                    start=a1_start,
-                    stop=a1_stop,
-                    duration=a1_duration,
-                    percent_done=None,
-                    resources=None,
-                    color="#FF8080",
-                    depends_of=a0)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # INSTALL PILES 1
-    #a2_x = random.randint(0, len(a2_alternatives) - 1)
     a2_working_hours = 8
     a2_quantity = 6200  # VLF (64 piles x 50')
     a2_allowable_duration = (tw1_start - tw0_stop).days
@@ -375,18 +306,8 @@ for iter in range(number_of_runs):
     a2_cost = a2_crews * a2_duration * a2_working_hours * a2_hourly_cost + a2_ticket_cost + a2_weight_cost
     a2_start = tw0_stop
     a2_stop = None
-    a2 = gantt.Task(name='a2_install_piles',
-                    start=a2_start,
-                    stop=a2_stop,
-                    duration=a2_duration,
-                    percent_done=None,
-                    resources=None,
-                    color="#FF8080",
-                    depends_of=a1)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # CAST-IN-PLACE PIERS 1
-    #a3_x = random.randint(0, len(a3_alternatives) - 1)
-    #a6_x = random.randint(0, len(a6_alternatives) - 1) # Need to know this to define activity sequence.
     a3_working_hours = 8
     a3_quantity = 2*1674.18  # CY
     a3_quantity_SFCA = 2*10979.19 # SFCA
@@ -419,17 +340,8 @@ for iter in range(number_of_runs):
     a3_cost = a3_crews * a3_duration * a3_working_hours * a3_hourly_cost + a3_ticket_cost + a3_weight_cost
     a3_start = tw1_start
     a3_stop = None
-    a3 = gantt.Task(name='a3_cast-in-place_piers',
-                    start=a3_start,
-                    stop=a3_stop,
-                    duration=a3_duration,
-                    percent_done=None,
-                    resources=None,
-                    color="#FF8080",
-                    depends_of=a2)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # ABUTMENT BASE 1
-    #a4_x = random.randint(0, len(a4_alternatives) - 1)
     a4_working_hours = 8
     a4_quantity = 20631  # BCY
     a4_allowable_duration = tw1_duration.days/2
@@ -454,17 +366,8 @@ for iter in range(number_of_runs):
     a4_cost = a1_crews * a4_duration * a4_working_hours * a4_hourly_cost + a4_ticket_cost + a4_weight_cost
     a4_start = tw1_start
     a4_stop = a4_start + datetime.timedelta(a4_duration)
-    a4 = gantt.Task(name='a4_abutment_base',
-                    start=a4_start,
-                    stop=None,
-                    duration=a4_duration,
-                    percent_done=None,
-                    resources=None,
-                    color="#FF8080",
-                    depends_of=a1)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # CAST-IN-PLACE ABUTMENT 1
-    #a5_x = random.randint(0, len(a5_alternatives) - 1)
     a5_working_hours = 8
     a5_quantity = 978.21  # CY
     a5_quantity_SFCA = 3790.17  # SFCA
@@ -497,14 +400,6 @@ for iter in range(number_of_runs):
     a5_cost = a5_crews * a5_duration * a5_working_hours * a5_hourly_cost + a5_ticket_cost + a5_weight_cost
     a5_start = a4_start + datetime.timedelta(a4_duration)
     a5_stop = a5_start + datetime.timedelta(a5_duration)
-    a5 = gantt.Task(name='a5_cast-in-place_abutment',
-                    start=a5_start,
-                    stop=None,
-                    duration=a5_duration,
-                    percent_done=None,
-                    resources=None,
-                    color="#FF8080",
-                    depends_of=a4)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # INSTALL GIRDERS 1
     a6_working_hours = 8
@@ -534,17 +429,8 @@ for iter in range(number_of_runs):
     a6_cost = a6_crews * a6_duration * a6_working_hours * a6_hourly_cost + a6_ticket_cost + a6_weight_cost
     a6_start = None
     a6_stop = None
-    a6 = gantt.Task(name=a6_name,
-                    start=a6_start,
-                    stop=None,
-                    duration=a6_duration,
-                    percent_done=None,
-                    resources=None,
-                    color="#FF8080",
-                    depends_of=[a3, a5])
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # ABUTMENT BASE 2
-    #a7_x = random.randint(0, len(a7_alternatives) - 1)
     a7_working_hours = 8
     a7_quantity = 20631  # BCY
     a7_allowable_duration = (tw1_stop - a5_stop).days / 2
@@ -580,17 +466,8 @@ for iter in range(number_of_runs):
     a7_cost = a1_crews * a7_duration * a7_working_hours * a7_hourly_cost + a7_ticket_cost + a7_weight_cost
     a7_start = a5_stop
     a7_stop = a7_start + datetime.timedelta(a7_duration)
-    a7 = gantt.Task(name='a7_abutment_base',
-                     start=a7_start,
-                     stop=None,
-                     duration=a7_duration,
-                     percent_done=None,
-                     resources=None,
-                     color="#f4aa80",
-                     depends_of=a5)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # CAST-IN-PLACE ABUTMENT 1
-    #a8_x = random.randint(0, len(a8_alternatives) - 1)
     a8_working_hours = 8
     a8_quantity = 978.21  # CY
     a8_quantity_SFCA = 3790.17  # SFCA
@@ -629,26 +506,15 @@ for iter in range(number_of_runs):
     a8_cost = a8_crews * a8_duration * a8_working_hours * a8_hourly_cost + a8_ticket_cost + a8_weight_cost
     a8_start = a7_stop
     a8_stop = a8_start + datetime.timedelta(a8_duration)
-    a8 = gantt.Task(name='a8_cast-in-place_abutment',
-                     start=a8_start,
-                     stop=None,
-                     duration=a8_duration,
-                     percent_done=None,
-                     resources=None,
-                     color="#f4aa80",
-                     depends_of=a7)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # REMOVE BERM 1
-    #a9_x = random.randint(0, len(a9_alternatives) - 1)
     a9_working_hours = 8
     a9_quantity = 88752  # BCY
     if a6_x == 1:  # In case of incremental launching
-        a9_dependence = a3
         a9_name = 'a9_remove_berm_depends_of_[a3]'
         a9_allowable_duration = tw2_duration.days/2
         a9_start = tw2_start
     else:
-        a9_dependence = a6
         a9_name = 'a9_remove_berm_depends_of_[a6]'
         a9_allowable_duration = tw3_duration.days/2
         a9_start = tw3_start
@@ -674,17 +540,8 @@ for iter in range(number_of_runs):
         a9_weight_cost = mobilize_duration * B34K_cost * math.ceil(a9_equip_weight / 150000)
     a9_cost = a9_crews * a9_duration * a9_working_hours * a9_hourly_cost + a9_ticket_cost + a9_weight_cost
     a9_stop = a9_start + datetime.timedelta(a9_duration)
-    a9 = gantt.Task(name=a9_name,
-                    start=a9_start,
-                    stop=None,
-                    duration=a9_duration,
-                    percent_done=None,
-                    resources=None,
-                    color="#f4aa80",
-                    depends_of=a9_dependence)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # BUILD BERM 2
-    #a10_x = random.randint(0, len(a10_alternatives) - 1)
     a10_working_hours = 8
     a10_quantity = 88752  # BCY
     if a6_x == 1: a10_allowable_duration = tw2_duration.days - a7_duration # In case of incremental launching
@@ -712,17 +569,8 @@ for iter in range(number_of_runs):
     a10_cost = a10_crews * a10_duration * a10_working_hours * a10_hourly_cost + a10_ticket_cost + a10_weight_cost
     a10_start = a9_stop
     a10_stop = a10_start + datetime.timedelta(a10_duration)
-    a10 = gantt.Task(name='a10_build_berm',
-                    start=a10_start,
-                    stop=None,
-                    duration=a10_duration,
-                    percent_done=None,
-                    resources=None,
-                    color="#f4aa80",
-                    depends_of=a9)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # INSTALL PILES 2
-    #a11_x = random.randint(0, len(a11_alternatives) - 1)
     a11_working_hours = 8
     a11_quantity = 6200  # VLF (64 piles x 50')
     if a6_x == 1: a11_allowable_duration = (tw3_start - a10_stop).days # In case of incremental launching
@@ -754,16 +602,7 @@ for iter in range(number_of_runs):
     a11_cost = a11_crews * a11_duration * a11_working_hours * a11_hourly_cost + a11_ticket_cost + a11_weight_cost
     a11_start = a10_stop
     a11_stop = a11_start + datetime.timedelta(a11_duration)
-    a11 = gantt.Task(name='a11_install_piles',
-                    start=a11_start,
-                    stop=None,
-                    duration=a11_duration,
-                    percent_done=None,
-                    resources=None,
-                    color="#f4aa80",
-                    depends_of=a10)
     # CAST-IN-PLACE PIERS 1
-    #a12_x = random.randint(0, len(a12_alternatives) - 1)
     a12_working_hours = 8
     a12_quantity = 2 * 1674.18  # CY
     a12_quantity_SFCA = 2 * 10979.19  # SFCA
@@ -806,14 +645,6 @@ for iter in range(number_of_runs):
         a12_weight_cost = mobilize_duration * B34K_cost * math.ceil(a12_equip_weight / 150000)
     a12_cost = a12_crews * a12_duration * a12_working_hours * a12_hourly_cost + a12_ticket_cost + a12_weight_cost
     a12_stop = a12_start + datetime.timedelta(a12_duration)
-    a12 = gantt.Task(name='a12_cast-in-place_piers',
-                    start=a12_start,
-                    stop=None,
-                    duration=a12_duration,
-                    percent_done=None,
-                    resources=None,
-                    color="#f4aa80",
-                    depends_of=a11)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # INSTALL GIRDERS 1
     a13_working_hours = 8
@@ -843,35 +674,17 @@ for iter in range(number_of_runs):
         a13_cost = a13_crews * a13_duration * a13_working_hours * a13_hourly_cost + a13_ticket_cost + a13_weight_cost
         a13_start = a12_stop
         a13_stop = a13_start + datetime.timedelta(a13_duration)
-        a13 = gantt.Task(name=a13_name,
-                        start=a13_start,
-                        stop=None,
-                        duration=a13_duration,
-                        percent_done=None,
-                        resources=None,
-                        color="#f4aa80",
-                        depends_of=[a8, a12])
     else:
         a13_duration, a13_cost, a13_productivity, a13_crews, a13_x, a13_ppl = 0, 0, 0, 0, 1, 0
-        a13 = gantt.Task(name=' ',
-                        start=tw0_start,
-                        stop=None,
-                        duration=1,
-                        percent_done=None,
-                        resources=None,
-                        color="#FFFFFF")
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # REMOVE BERM 2
-    #a14_x = random.randint(0, len(a14_alternatives) - 1)
     a14_working_hours = 8
     a14_quantity = 88752  # BCY
     if a6_x == 1:  # In case of incremental launching
-        a14_dependence = a12
         a14_name = 'a14_remove_berm'
         a14_allowable_duration = tw3_duration.days
         a14_start = tw3_start
     else:
-        a14_dependence = a13
         a14_name = 'a14_remove_berm'
         a14_allowable_duration = (tw5_stop - a13_stop).days
         a14_start = a13_stop + datetime.timedelta(1)
@@ -902,17 +715,8 @@ for iter in range(number_of_runs):
         a14_weight_cost = mobilize_duration * B34K_cost * math.ceil(a14_equip_weight / 150000)
     a14_cost = a14_crews * a14_duration * a14_working_hours * a14_hourly_cost + a14_ticket_cost + a14_weight_cost
     a14_stop = a14_start + datetime.timedelta(a14_duration)
-    a14 = gantt.Task(name=a14_name,
-                    start=a14_start,
-                    stop=None,
-                    duration=a14_duration,
-                    percent_done=None,
-                    resources=None,
-                    color="#f4aa80",
-                    depends_of=a14_dependence)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # CAST-IN-PLACE PIERS 1
-    #a15_x = random.randint(0, len(a15_alternatives) - 1)
     a15_working_hours = 8
     a15_quantity = 72656  # SF
     a15_quantity_SFCA = 72656 + 2940 + 98  # SFCA of slab bottom plus edges
@@ -920,11 +724,9 @@ for iter in range(number_of_runs):
     if a6_x == 0:
         a15_allowable_duration = (tw4_stop - a14_stop).days
         a15_start = a13_stop + datetime.timedelta(1)
-        a15_dependence = a13
     else:
         a15_allowable_duration = tw4_duration.days
         a15_start = tw4_start
-        a15_dependence = a6
     # Productivity
     if len(a15_alternatives[a15_x]) == 2:
         a15_productivity = a15_alternatives[a15_x][0][0]
@@ -956,74 +758,247 @@ for iter in range(number_of_runs):
         a15_weight_cost = mobilize_duration * B34K_cost * math.ceil(a15_equip_weight / 150000)
     a15_cost = a15_crews * a15_duration * a15_working_hours * a15_hourly_cost + a15_ticket_cost + a15_weight_cost
     a15_stop = a15_start + datetime.timedelta(a15_duration)
-    a15 = gantt.Task(name='a15_cast-in-place_deck',
-                    start=a15_start,
-                    stop=None,
-                    duration=a15_duration,
-                    percent_done=None,
-                    resources=None,
-                    color="#f4aa80",
-                    depends_of=a15_dependence)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
    # Total duration estimation
     work_duration = (a15_stop - a0_start).days
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    # Add time-windows to schedule
-    time_windows = gantt.Project(name='Time windows')
-    time_windows.add_task(tw0)
-    time_windows.add_task(tw1)
-    time_windows.add_task(tw2)
-    time_windows.add_task(tw3)
-    time_windows.add_task(tw4)
-    time_windows.add_task(tw5)
-    # Add activities to schedule
-    bridge_side_1 = gantt.Project(name='Side 1')
-    bridge_side_1.add_task(a0),
-    bridge_side_1.add_task(a1)
-    bridge_side_1.add_task(a4)
-    bridge_side_1.add_task(a5)
-    bridge_side_1.add_task(a2)
-    bridge_side_1.add_task(a3)
-    bridge_side_1.add_task(a6)
-    bridge_side_2 = gantt.Project(name='Side 2')
-    bridge_side_2.add_task(a7)
-    bridge_side_2.add_task(a8)
-    bridge_side_2.add_task(a9)
-    bridge_side_2.add_task(a10)
-    bridge_side_2.add_task(a11)
-    bridge_side_2.add_task(a12)
-    bridge_side_2.add_task(a13)
-    bridge_side_2.add_task(a14)
-    bridge_side_2.add_task(a15)
-    # Create schedule
-    schedule = gantt.Project(name='Bridge')
-    schedule.add_task(time_windows)
-    schedule.add_task(bridge_side_1)
-    schedule.add_task(bridge_side_2)
     # Draw schedule
-    if iter <= 9:
+    if iter <= schedules_to_print:
+        tw0 = gantt.Task(name='tw0_winter_road',
+                         start=tw0_start,
+                         stop=tw0_stop,
+                         duration=None,
+                         percent_done=None,
+                         resources=None,
+                         color="#ADD8E6",
+                         depends_of=None)
+        tw1 = gantt.Task(name='tw1_temperature_>0C°',
+                         start=tw1_start,
+                         stop=tw1_stop,
+                         duration=None,
+                         percent_done=None,
+                         resources=None,
+                         color="#ADD8E6",
+                         depends_of=None)
+        tw2 = gantt.Task(name='tw2_in_river_activity',
+                         start=tw2_start,
+                         stop=tw2_stop,
+                         duration=None,
+                         percent_done=None,
+                         resources=None,
+                         color="#ADD8E6",
+                         depends_of=None)
+        tw3 = gantt.Task(name='tw3_winter_road',
+                         start=tw3_start,
+                         stop=tw3_stop,
+                         duration=None,
+                         percent_done=None,
+                         resources=None,
+                         color="#ADD8E6",
+                         depends_of=None)
+        tw4 = gantt.Task(name='tw4_temperature_>0C°',
+                         start=tw4_start,
+                         stop=tw4_stop,
+                         duration=None,
+                         percent_done=None,
+                         resources=None,
+                         color="#ADD8E6",
+                         depends_of=None)
+        tw5 = gantt.Task(name='tw5_in_river_activity',
+                         start=tw5_start,
+                         stop=tw5_stop,
+                         duration=None,
+                         percent_done=None,
+                         resources=None,
+                         color="#ADD8E6",
+                         depends_of=None)
+        a0 = gantt.Task(name='a0_mobilize_job_site',
+                        start=a0_start,
+                        stop=a0_stop,
+                        duration=a0_duration,
+                        percent_done=None,
+                        resources=None,
+                        color="#FF8080",
+                        depends_of=None)
+        a1 = gantt.Task(name='a1_build_berm',
+                        start=a1_start,
+                        stop=a1_stop,
+                        duration=a1_duration,
+                        percent_done=None,
+                        resources=None,
+                        color="#FF8080",
+                        depends_of=a0)
+        a2 = gantt.Task(name='a2_install_piles',
+                        start=a2_start,
+                        stop=a2_stop,
+                        duration=a2_duration,
+                        percent_done=None,
+                        resources=None,
+                        color="#FF8080",
+                        depends_of=a1)
+        a3 = gantt.Task(name='a3_cast-in-place_piers',
+                        start=a3_start,
+                        stop=a3_stop,
+                        duration=a3_duration,
+                        percent_done=None,
+                        resources=None,
+                        color="#FF8080",
+                        depends_of=a2)
+        a4 = gantt.Task(name='a4_abutment_base',
+                        start=a4_start,
+                        stop=None,
+                        duration=a4_duration,
+                        percent_done=None,
+                        resources=None,
+                        color="#FF8080",
+                        depends_of=a1)
+        a5 = gantt.Task(name='a5_cast-in-place_abutment',
+                        start=a5_start,
+                        stop=None,
+                        duration=a5_duration,
+                        percent_done=None,
+                        resources=None,
+                        color="#FF8080",
+                        depends_of=a4)
+        a6 = gantt.Task(name=a6_name,
+                        start=a6_start,
+                        stop=None,
+                        duration=a6_duration,
+                        percent_done=None,
+                        resources=None,
+                        color="#FF8080",
+                        depends_of=[a3, a5])
+        a7 = gantt.Task(name='a7_abutment_base',
+                        start=a7_start,
+                        stop=None,
+                        duration=a7_duration,
+                        percent_done=None,
+                        resources=None,
+                        color="#f4aa80",
+                        depends_of=a5)
+        a8 = gantt.Task(name='a8_cast-in-place_abutment',
+                        start=a8_start,
+                        stop=None,
+                        duration=a8_duration,
+                        percent_done=None,
+                        resources=None,
+                        color="#f4aa80",
+                        depends_of=a7)
+        if a6_x == 1:  # In case of incremental launching
+            a9_dependence = a3
+        else:
+            a9_dependence = a6
+        a9 = gantt.Task(name=a9_name,
+                        start=a9_start,
+                        stop=None,
+                        duration=a9_duration,
+                        percent_done=None,
+                        resources=None,
+                        color="#f4aa80",
+                        depends_of=a9_dependence)
+        a10 = gantt.Task(name='a10_build_berm',
+                         start=a10_start,
+                         stop=None,
+                         duration=a10_duration,
+                         percent_done=None,
+                         resources=None,
+                         color="#f4aa80",
+                         depends_of=a9)
+        a11 = gantt.Task(name='a11_install_piles',
+                         start=a11_start,
+                         stop=None,
+                         duration=a11_duration,
+                         percent_done=None,
+                         resources=None,
+                         color="#f4aa80",
+                         depends_of=a10)
+        a12 = gantt.Task(name='a12_cast-in-place_piers',
+                         start=a12_start,
+                         stop=None,
+                         duration=a12_duration,
+                         percent_done=None,
+                         resources=None,
+                         color="#f4aa80",
+                         depends_of=a11)
+        if a6_x == 0:
+            a13 = gantt.Task(name=a13_name,
+                             start=a13_start,
+                             stop=None,
+                             duration=a13_duration,
+                             percent_done=None,
+                             resources=None,
+                             color="#f4aa80",
+                             depends_of=[a8, a12])
+        else:
+            a13 = gantt.Task(name=' ',
+                             start=tw0_start,
+                             stop=None,
+                             duration=1,
+                             percent_done=None,
+                             resources=None,
+                             color="#FFFFFF")
+        if a6_x == 1:  # In case of incremental launching
+            a14_dependence = a12
+        else:
+            a14_dependence = a13
+        a14 = gantt.Task(name=a14_name,
+                         start=a14_start,
+                         stop=None,
+                         duration=a14_duration,
+                         percent_done=None,
+                         resources=None,
+                         color="#f4aa80",
+                         depends_of=a14_dependence)
+        if a6_x == 0:
+            a15_dependence = a13
+        else:
+            a15_dependence = a6
+        a15 = gantt.Task(name='a15_cast-in-place_deck',
+                         start=a15_start,
+                         stop=None,
+                         duration=a15_duration,
+                         percent_done=None,
+                         resources=None,
+                         color="#f4aa80",
+                         depends_of=a15_dependence)
+        # Add time-windows to schedule
+        time_windows = gantt.Project(name='Time windows')
+        time_windows.add_task(tw0)
+        time_windows.add_task(tw1)
+        time_windows.add_task(tw2)
+        time_windows.add_task(tw3)
+        time_windows.add_task(tw4)
+        time_windows.add_task(tw5)
+        # Add activities to schedule
+        bridge_side_1 = gantt.Project(name='Side 1')
+        bridge_side_1.add_task(a0),
+        bridge_side_1.add_task(a1)
+        bridge_side_1.add_task(a4)
+        bridge_side_1.add_task(a5)
+        bridge_side_1.add_task(a2)
+        bridge_side_1.add_task(a3)
+        bridge_side_1.add_task(a6)
+        bridge_side_2 = gantt.Project(name='Side 2')
+        bridge_side_2.add_task(a7)
+        bridge_side_2.add_task(a8)
+        bridge_side_2.add_task(a9)
+        bridge_side_2.add_task(a10)
+        bridge_side_2.add_task(a11)
+        bridge_side_2.add_task(a12)
+        bridge_side_2.add_task(a13)
+        bridge_side_2.add_task(a14)
+        bridge_side_2.add_task(a15)
+        # Create schedule
+        schedule = gantt.Project(name='Bridge')
+        schedule.add_task(time_windows)
+        schedule.add_task(bridge_side_1)
+        schedule.add_task(bridge_side_2)
         schedule.make_svg_for_tasks(filename='run ' + str(iter+1) + '.svg',
                                 today=None,
                                 start=datetime.date(2022, 12, 1),
                                 end=datetime.date(2024, 11, 1),
                                 scale=gantt.DRAW_WITH_WEEKLY_SCALE)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    a1_alternative_list.append(a1_x), a1_duration_list.append(a1_duration), a1_cost_list.append(round(a1_cost, 0)), a1_crews_list.append(a1_crews), a1_prod_list.append(a1_productivity)
-    a2_alternative_list.append(a2_x), a2_duration_list.append(a2_duration), a2_cost_list.append(round(a2_cost, 0)), a2_crews_list.append(a2_crews), a2_prod_list.append(a2_productivity)
-    a3_alternative_list.append(a3_x), a3_duration_list.append(a3_duration), a3_cost_list.append(round(a3_cost, 0)), a3_crews_list.append(a3_crews), a3_prod_list.append(a3_productivity)
-    a4_alternative_list.append(a4_x), a4_duration_list.append(a4_duration), a4_cost_list.append(round(a4_cost, 0)), a4_crews_list.append(a4_crews), a4_prod_list.append(a4_productivity)
-    a5_alternative_list.append(a5_x), a5_duration_list.append(a5_duration), a5_cost_list.append(round(a5_cost, 0)), a5_crews_list.append(a5_crews), a5_prod_list.append(a5_productivity)
-    a6_alternative_list.append(a6_x), a6_duration_list.append(a6_duration), a6_cost_list.append(round(a6_cost, 0)), a6_crews_list.append(a6_crews), a6_prod_list.append(a6_productivity)
-    a7_alternative_list.append(a7_x), a7_duration_list.append(a7_duration), a7_cost_list.append(round(a7_cost, 0)), a7_crews_list.append(a7_crews), a7_prod_list.append(a7_productivity)
-    a8_alternative_list.append(a8_x), a8_duration_list.append(a8_duration), a8_cost_list.append(round(a8_cost, 0)), a8_crews_list.append(a8_crews), a8_prod_list.append(a8_productivity)
-    a9_alternative_list.append(a9_x), a9_duration_list.append(a9_duration), a9_cost_list.append(round(a9_cost, 0)), a9_crews_list.append(a9_crews), a9_prod_list.append(a9_productivity)
-    a10_alternative_list.append(a10_x), a10_duration_list.append(a10_duration), a10_cost_list.append(round(a10_cost, 0)), a10_crews_list.append(a10_crews), a10_prod_list.append(a10_productivity)
-    a11_alternative_list.append(a11_x), a11_duration_list.append(a11_duration), a11_cost_list.append(round(a11_cost, 0)), a11_crews_list.append(a11_crews), a11_prod_list.append(a11_productivity)
-    a12_alternative_list.append(a12_x), a12_duration_list.append(a12_duration), a12_cost_list.append(round(a12_cost, 0)), a12_crews_list.append(a12_crews), a12_prod_list.append(a12_productivity)
-    a13_alternative_list.append(a13_x), a13_duration_list.append(a13_duration), a13_cost_list.append(round(a13_cost, 0)), a13_crews_list.append(a13_crews), a13_prod_list.append(a13_productivity)
-    a14_alternative_list.append(a14_x), a14_duration_list.append(a14_duration), a14_cost_list.append(round(a14_cost, 0)), a14_crews_list.append(a14_crews), a14_prod_list.append(a14_productivity)
-    a15_alternative_list.append(a15_x), a15_duration_list.append(a15_duration), a15_cost_list.append(round(a15_cost, 0)), a15_crews_list.append(a15_crews), a15_prod_list.append(a15_productivity)
-    work_duration_list.append(work_duration)
     # Cost of temporary facilities
     if a6_x == 0:
         max_ppl = max(a1_ppl, a2_ppl, a3_ppl + a4_ppl, a3_ppl + a5_ppl, a3_ppl + a7_ppl, a3_ppl + a8_ppl, a14_ppl + a15_ppl,
@@ -1032,196 +1007,92 @@ for iter in range(number_of_runs):
         max_ppl = max(a1_ppl, a2_ppl, a3_ppl + a4_ppl, a3_ppl + a5_ppl, a3_ppl + a7_ppl, a6_ppl + a8_ppl, a15_ppl,
                       a6_ppl + a9_ppl, a6_ppl + a10_ppl, a6_ppl + a11_ppl, a6_ppl + a12_ppl, a6_ppl + a13_ppl, a6_ppl + a14_ppl)
     if max_ppl <= 9:  # 9 man bunk house trailer $42,900 to buy (p. 17 line 015213.200910)
-        temp_cost_list.append(42900)
+        temp_cost = 42900
     else:  # 18 man bunk house trailer $55,000 to buy
-        temp_cost_list.append(round(max_ppl/ 18* 55000, 0))
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-print('Simulation is complete')
-print('Starting computation of results')
-print('-----------------------------------------------------------------------')
-list = list(zip(a1_alternative_list, a1_duration_list, a1_cost_list, a1_crews_list, a1_prod_list,
-                a2_alternative_list, a2_duration_list, a2_cost_list, a2_crews_list, a2_prod_list,
-                a3_alternative_list, a3_duration_list, a3_cost_list, a3_crews_list, a3_prod_list,
-                a4_alternative_list, a4_duration_list, a4_cost_list, a4_crews_list, a4_prod_list,
-                a5_alternative_list, a5_duration_list, a5_cost_list, a5_crews_list, a5_prod_list,
-                a6_alternative_list, a6_duration_list, a6_cost_list, a6_crews_list, a6_prod_list,
-                a7_alternative_list, a7_duration_list, a7_cost_list, a7_crews_list, a7_prod_list,
-                a8_alternative_list, a8_duration_list, a8_cost_list, a8_crews_list, a8_prod_list,
-                a9_alternative_list, a9_duration_list, a9_cost_list, a9_crews_list, a9_prod_list,
-                a10_alternative_list, a10_duration_list, a10_cost_list, a10_crews_list, a10_prod_list,
-                a11_alternative_list, a11_duration_list, a11_cost_list, a11_crews_list, a11_prod_list,
-                a12_alternative_list, a12_duration_list, a12_cost_list, a12_crews_list, a12_prod_list,
-                a13_alternative_list, a13_duration_list, a13_cost_list, a13_crews_list, a13_prod_list,
-                a14_alternative_list, a14_duration_list, a14_cost_list, a14_crews_list, a14_prod_list,
-                a15_alternative_list, a15_duration_list, a15_cost_list, a15_crews_list, a15_prod_list,
-                work_duration_list, temp_cost_list))
-df = pd.DataFrame(list, columns=["a1_berm", "a1_t", "a1_$", "a1_c", "a1_p",
-                                 "a2_piles", "a2_t", "a2_$", "a2_c", "a2_p",
-                                 "a3_piers", "a3_t", "a3_$", "a3_c", "a3_p",
-                                 "a4_abutment_base", "a4_t", "a4_$", "a4_c", "a4_p",
-                                 "a5_abutment", "a5_t", "a5_$", "a5_c", "a5_p",
-                                 "a6_girders", "a6_t", "a6_$", "a6_c", "a6_p",
-                                 "a7_abutment_base2", "a7_t", "a7_$", "a7_c", "a7_p",
-                                 "a8_abutment2", "a8_t", "a8_$", "a8_c", "a8_p",
-                                 "a9_remove_berm", "a9_t", "a9_$", "a9_c", "a9_p",
-                                 "a10_berm2", "a10_t", "a10_$", "a10_c", "a10_p",
-                                 "a11_piles2", "a11_t", "a11_$", "a11_c", "a11_p",
-                                 "a12_piers2", "a12_t", "a12_$", "a12_c", "a12_p",
-                                 "a13_girders2", "a13_t", "a13_$", "a13_c", "a13_p",
-                                 "a14_remove_berm2", "a14_t", "a14_$", "a14_c", "a14_p",
-                                 "a15_deck", "a15_t", "a15_$", "a15_c", "a15_p",
-                                 "total_t", "temp_$"])
-
-
-df["indirect_$"] = df["total_t"] * 10000
-df["bonus"] = (df["total_t"] - 634) * 10000
-df["total_$"] = round((df["a1_$"] + df["a2_$"] + df["a3_$"] + df["a4_$"] + df["a5_$"] + df["a6_$"] + df['a7_$'] + df['a8_$'] +
-                 df['a9_$'] + df['a10_$'] + df['a11_$'] + df['a12_$'] + df['a13_$'] + df['a14_$'] + df['a15_$'] + df["temp_$"] + df["indirect_$"] + df["bonus"]), 0)
-df["reward"] = 1 + ((df["total_$"] - df["total_$"].min()) * (-1))/(df["total_$"].max()-df["total_$"].min())
-
-#df = df.drop_duplicates(subset=['total_$'])
-#df.to_csv('data.csv')
-print('Encountered', format(df.shape[0] - df.drop_duplicates().shape[0], ',d'), 'duplicates')
-print('Simulation efficiency is', round(100-100/number_of_runs * (df.shape[0] - df.drop_duplicates().shape[0]),3), '%')
-df = df.drop_duplicates()
-print('Duplicates dropped')
-if number_of_runs <= 100:
-     print(df.to_string())
-if mode == 2:
-    print('Total cost =', df["total_$"].sum())
-    print('Total time =', df["total_t"].sum())
-else:
-    print('-----------------------------------------------------------------------')
-    print('Dataset with all possible combinations is created')
-    print('Unique duration scenarios =', format(df.nunique()["total_t"], ',d'))
-    print('Unique cost scenarios =', format(df.nunique()["total_$"], ',d'))
-    print('Total unique scenarios =', format(df.nunique()["reward"], ',d'))
-    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+        temp_cost = round(max_ppl/ 18* 55000, 0)
+    # Indirect costs
+    indirect_cost = work_duration * 10000
+    bonus = (work_duration - 634) * 10000
+    total_cost = round((a1_cost + a2_cost + a3_cost + a4_cost + a5_cost + a6_cost + a7_cost + a8_cost + a9_cost +
+                        a10_cost + a11_cost + a12_cost + a13_cost + a14_cost + a15_cost + temp_cost + indirect_cost +
+                        bonus), 0)
     # REWARD VALUES FOR EACH ALTERNATIVE
-    print('-----------------------------------------------------------------------')
-    # a1
-    for i in range(len(a1_alternatives)):
-        a1_average_reward = df.loc[df["a1_berm"] == i,]["reward"].mean()
-        a1_productivity = df.loc[df["a1_berm"] == i,]["a1_p"].mean()
-        a1_average_crews = df.loc[df["a1_berm"] == i,]["a1_c"].mean()
-        a1_daily_cost = df.loc[df["a1_berm"] == i,]["a1_$"].mean()/df.loc[df["a1_berm"] == i,]["a1_t"].mean()
-        print('a1_berm alternative', i, '|', round(a1_average_reward, 5), '| average daily crew cost =',
-              format(int(a1_daily_cost), ',d'),'$/hr| productivity =', round(a1_productivity, 2), 'earth_CY/hr | average crews needed =', round(a1_average_crews, 1))
-    # a2
-    for i in range(len(a2_alternatives)):
-        a2_average_reward = df.loc[df["a2_piles"] == i,]["reward"].mean()
-        a2_productivity = df.loc[df["a2_piles"] == i,]["a2_p"].mean()
-        a2_average_crews = df.loc[df["a2_piles"] == i,]["a2_c"].mean()
-        a2_daily_cost = df.loc[df["a2_piles"] == i,]["a2_$"].mean()/df.loc[df["a2_piles"] == i,]["a2_t"].mean()
-        print('a2_piles alternative', i, '|', round(a2_average_reward, 5), '| average daily crew cost =',
-              format(int(a2_daily_cost), ',d'),'$/hr| productivity =', round(a2_productivity, 2), 'VLF/hr | average crews needed =', round(a2_average_crews, 1))
-    # a3
-    for i in range(len(a3_alternatives)):
-        a3_average_reward = df.loc[df["a3_piers"] == i,]["reward"].mean()
-        a3_productivity = df.loc[df["a3_piers"] == i,]["a3_p"].mean()
-        a3_average_crews = df.loc[df["a3_piers"] == i,]["a3_c"].mean()
-        a3_daily_cost = df.loc[df["a3_piers"] == i,]["a3_$"].mean()/df.loc[df["a3_piers"] == i,]["a3_t"].mean()
-        print('a3_piers alternative', i, '|', round(a3_average_reward, 5), '| average daily crew cost =',
-              format(int(a3_daily_cost), ',d'),'$/hr| productivity =', round(a3_productivity, 2), 'concrete_CY/hr | average crews needed =', round(a3_average_crews, 1))
-    # a4
-    for i in range(len(a4_alternatives)):
-        a4_average_reward = df.loc[df["a4_abutment_base"] == i,]["reward"].mean()
-        a4_productivity = df.loc[df["a4_abutment_base"] == i,]["a4_p"].mean()
-        a4_average_crews = df.loc[df["a4_abutment_base"] == i,]["a4_c"].mean()
-        a4_daily_cost = df.loc[df["a4_abutment_base"] == i,]["a4_$"].mean()/df.loc[df["a4_abutment_base"] == i,]["a4_t"].mean()
-        print('a4_abutment_base alternative', i, '|', round(a4_average_reward, 5), '| average daily crew cost =',
-              format(int(a4_daily_cost), ',d'),'$/hr| productivity =', round(a4_productivity, 2), 'earth_CY/hr | average crews needed =', round(a4_average_crews, 1))
-    # a5
-    for i in range(len(a5_alternatives)):
-        a5_average_reward = df.loc[df["a5_abutment"] == i,]["reward"].mean()
-        a5_productivity = df.loc[df["a5_abutment"] == i,]["a5_p"].mean()
-        a5_average_crews = df.loc[df["a5_abutment"] == i,]["a5_c"].mean()
-        a5_daily_cost = df.loc[df["a5_abutment"] == i,]["a5_$"].mean()/df.loc[df["a5_abutment"] == i,]["a5_t"].mean()
-        print('a5_abutment alternative', i, '|', round(a5_average_reward, 5), '| average daily crew cost =',
-              format(int(a5_daily_cost), ',d'),'$/hr| productivity =', round(a5_productivity, 2), 'concrete_CY/hr | average crews needed =', round(a5_average_crews, 1))
-    # a6
-    for i in range(len(a6_alternatives)):
-        a6_average_reward = df.loc[df["a6_girders"] == i,]["reward"].mean()
-        a6_productivity = df.loc[df["a6_girders"] == i,]["a6_p"].mean()
-        a6_average_crews = df.loc[df["a6_girders"] == i,]["a6_c"].mean()
-        a6_daily_cost = df.loc[df["a6_girders"] == i,]["a6_$"].mean()/df.loc[df["a6_girders"] == i,]["a6_t"].mean()
-        print('a6_girders alternative', i, '|', round(a6_average_reward, 5), '| average daily crew cost =',
-              format(int(a6_daily_cost), ',d'),'$/hr| productivity =', round(a6_productivity, 2), 'Ton/hr | average crews needed =', round(a6_average_crews, 1))
-    # a7
-    for i in range(len(a7_alternatives)):
-        a7_average_reward = df.loc[df["a7_abutment_base2"] == i,]["reward"].mean()
-        a7_productivity = df.loc[df["a7_abutment_base2"] == i,]["a7_p"].mean()
-        a7_average_crews = df.loc[df["a7_abutment_base2"] == i,]["a7_c"].mean()
-        a7_daily_cost = df.loc[df["a7_abutment_base2"] == i,]["a7_$"].mean()/df.loc[df["a7_abutment_base2"] == i,]["a7_t"].mean()
-        print('a7_abutment_base2 alternative', i, '|', round(a7_average_reward, 5), '| average daily crew cost =',
-              format(int(a7_daily_cost), ',d'),'$/hr| productivity =', round(a7_productivity, 2), 'earth_CY/hr | average crews needed =', round(a7_average_crews, 1))
-    # a8
-    for i in range(len(a8_alternatives)):
-        a8_average_reward = df.loc[df["a8_abutment2"] == i,]["reward"].mean()
-        a8_productivity = df.loc[df["a8_abutment2"] == i,]["a8_p"].mean()
-        a8_average_crews = df.loc[df["a8_abutment2"] == i,]["a8_c"].mean()
-        a8_daily_cost = df.loc[df["a8_abutment2"] == i,]["a8_$"].mean()/df.loc[df["a8_abutment2"] == i,]["a8_t"].mean()
-        print('a8_abutment2 alternative', i, '|', round(a8_average_reward, 5), '| average daily crew cost =',
-              format(int(a8_daily_cost), ',d'),'$/hr| productivity =', round(a8_productivity, 2), 'concrete_CY/hr | average crews needed =', round(a8_average_crews, 1))
-    # a9
-    for i in range(len(a9_alternatives)):
-        a9_average_reward = df.loc[df["a9_remove_berm"] == i,]["reward"].mean()
-        a9_productivity = df.loc[df["a9_remove_berm"] == i,]["a9_p"].mean()
-        a9_average_crews = df.loc[df["a9_remove_berm"] == i,]["a9_c"].mean()
-        a9_daily_cost = df.loc[df["a9_remove_berm"] == i,]["a9_$"].mean()/df.loc[df["a9_remove_berm"] == i,]["a9_t"].mean()
-        print('a9_remove_berm alternative', i, '|', round(a9_average_reward, 5), '| average daily crew cost =',
-              format(int(a9_daily_cost), ',d'),'$/hr| productivity =', round(a9_productivity, 2), 'earth_CY/hr | average crews needed =', round(a9_average_crews, 1))
-    # a10
-    for i in range(len(a10_alternatives)):
-        a10_average_reward = df.loc[df["a10_berm2"] == i,]["reward"].mean()
-        a10_productivity = df.loc[df["a10_berm2"] == i,]["a10_p"].mean()
-        a10_average_crews = df.loc[df["a10_berm2"] == i,]["a10_c"].mean()
-        a10_daily_cost = df.loc[df["a10_berm2"] == i,]["a10_$"].mean()/df.loc[df["a10_berm2"] == i,]["a10_t"].mean()
-        print('a10_berm2 alternative', i, '|', round(a10_average_reward, 5), '| average daily crew cost =',
-              format(int(a10_daily_cost), ',d'),'$/hr| productivity =', round(a10_productivity, 2), 'earth_CY/hr | average crews needed =', round(a10_average_crews, 1))
-    # a11
-    for i in range(len(a11_alternatives)):
-        a11_average_reward = df.loc[df["a11_piles2"] == i,]["reward"].mean()
-        a11_productivity = df.loc[df["a11_piles2"] == i,]["a11_p"].mean()
-        a11_average_crews = df.loc[df["a11_piles2"] == i,]["a11_c"].mean()
-        a11_daily_cost = df.loc[df["a11_piles2"] == i,]["a11_$"].mean()/df.loc[df["a11_piles2"] == i,]["a11_t"].mean()
-        print('a11_piles2 alternative', i, '|', round(a11_average_reward, 5), '| average daily crew cost =',
-              format(int(a11_daily_cost), ',d'),'$/hr| productivity =', round(a11_productivity, 2), 'VLF/hr | average crews needed =', round(a11_average_crews, 1))
-    # a12
-    for i in range(len(a12_alternatives)):
-        a12_average_reward = df.loc[df["a12_piers2"] == i,]["reward"].mean()
-        a12_productivity = df.loc[df["a12_piers2"] == i,]["a12_p"].mean()
-        a12_average_crews = df.loc[df["a12_piers2"] == i,]["a12_c"].mean()
-        a12_daily_cost = df.loc[df["a12_piers2"] == i,]["a12_$"].mean()/df.loc[df["a12_piers2"] == i,]["a12_t"].mean()
-        print('a12_piers2 alternative', i, '|', round(a12_average_reward, 5), '| average daily crew cost =',
-              format(int(a12_daily_cost), ',d'),'$/hr| productivity =', round(a12_productivity, 2), 'concrete_CY/hr | average crews needed =', round(a12_average_crews, 1))
-    # # a13
-    # for i in range(len(a6_alternatives)):
-    #     a13_average_reward = df.loc[df["a13_girders2"] == i,]["reward"].mean()
-    #     a13_productivity = df.loc[df["a13_girders2"] == i,]["a13_p"].mean()
-    #     a13_average_crews = df.loc[df["a13_girders2"] == i,]["a13_c"].mean()
-    #     if i == 0:
-    #         a13_daily_cost = df.loc[df["a13_girders2"] == i,]["a13_$"].mean()/df.loc[df["a13_girders2"] == i,]["a13_c"].mean()/df.loc[df["a13_girders2"] == i,]["a13_t"].mean()
-    #     else: a13_daily_cost = 0
-    #     print('a13_girders2 alternative', i, '|', round(a13_average_reward, 5), '| average daily crew cost =',
-    #           format(int(a13_daily_cost), ',d'),'$/hr| productivity =', round(a13_productivity, 2), 'Ton/hr | average crews needed =', round(a13_average_crews, 1))
-    # print('-----------------------------------------------------------------------')
-    # a14
-    for i in range(len(a14_alternatives)):
-        a14_average_reward = df.loc[df["a14_remove_berm2"] == i,]["reward"].mean()
-        a14_productivity = df.loc[df["a14_remove_berm2"] == i,]["a14_p"].mean()
-        a14_average_crews = df.loc[df["a14_remove_berm2"] == i,]["a14_c"].mean()
-        a14_daily_cost = df.loc[df["a14_remove_berm2"] == i,]["a14_$"].mean()/df.loc[df["a14_remove_berm2"] == i,]["a14_t"].mean()
-        print('a14_remove_berm2 alternative', i, '|', round(a14_average_reward, 5), '| average daily crew cost =',
-              format(int(a14_daily_cost), ',d'),'$/hr| productivity =', round(a14_productivity, 2), 'earth_CY/hr | average crews needed =', round(a14_average_crews, 1))
-    # a15
-    for i in range(len(a15_alternatives)):
-        a15_average_reward = df.loc[df["a15_deck"] == i,]["reward"].mean()
-        a15_productivity = df.loc[df["a15_deck"] == i,]["a15_p"].mean()
-        a15_average_crews = df.loc[df["a15_deck"] == i,]["a15_c"].mean()
-        a15_daily_cost = df.loc[df["a15_deck"] == i,]["a15_$"].mean()/df.loc[df["a15_deck"] == i,]["a15_t"].mean()
-        print('a15_deck alternative', i, '|', round(a15_average_reward, 5), '| average daily crew cost =',
-              format(int(a15_daily_cost), ',d'),'$/hr| productivity =', round(a15_productivity, 2), 'concrete_SF/hr | average crews needed =', round(a15_average_crews, 1))
-    print('-----------------------------------------------------------------------')
+    
+    if a1_x == 0: a1_r1 += total_cost/1000000; a1_o1 += 1
+    elif a1_x == 1: a1_r2 += total_cost / 1000000; a1_o2 += 1
+    else: a1_r3 += total_cost / 1000000; a1_o3 += 1
+    if a2_x == 0: a2_r1 += total_cost/1000000; a2_o1 += 1
+    elif a2_x == 1: a2_r2 += total_cost / 1000000; a2_o2 += 1
+    else: a2_r3 += total_cost / 1000000; a2_o3 += 1
+    if a3_x == 0: a3_r1 += total_cost/1000000; a3_o1 += 1
+    elif a3_x == 1: a3_r2 += total_cost / 1000000; a3_o2 += 1
+    else: a3_r3 += total_cost / 1000000; a3_o3 += 1
+    if a4_x == 0: a4_r1 += total_cost/1000000; a4_o1 += 1
+    elif a4_x == 1: a4_r2 += total_cost / 1000000; a4_o2 += 1
+    else: a4_r3 += total_cost / 1000000; a4_o3 += 1
+    if a5_x == 0: a5_r1 += total_cost/1000000; a5_o1 += 1
+    elif a5_x == 1: a5_r2 += total_cost / 1000000; a5_o2 += 1
+    else: a5_r3 += total_cost / 1000000; a5_o3 += 1
+    if a6_x == 0: a6_r1 += total_cost/1000000; a6_o1 += 1
+    elif a6_x == 1: a6_r2 += total_cost / 1000000; a6_o2 += 1
+    if a7_x == 0: a7_r1 += total_cost/1000000; a7_o1 += 1
+    elif a7_x == 1: a7_r2 += total_cost / 1000000; a7_o2 += 1
+    else: a7_r3 += total_cost / 1000000; a7_o3 += 1
+    if a8_x == 0: a8_r1 += total_cost/1000000; a8_o1 += 1
+    elif a8_x == 1: a8_r2 += total_cost / 1000000; a8_o2 += 1
+    else: a8_r3 += total_cost / 1000000; a8_o3 += 1
+    if a9_x == 0: a9_r1 += total_cost/1000000; a9_o1 += 1
+    elif a9_x == 1: a9_r2 += total_cost / 1000000; a9_o2 += 1
+    else: a9_r3 += total_cost / 1000000; a9_o3 += 1
+    if a10_x == 0: a10_r1 += total_cost/1000000; a10_o1 += 1
+    elif a10_x == 1: a10_r2 += total_cost / 1000000; a10_o2 += 1
+    else: a10_r3 += total_cost / 1000000; a10_o3 += 1
+    if a11_x == 0: a11_r1 += total_cost/1000000; a11_o1 += 1
+    elif a11_x == 1: a11_r2 += total_cost / 1000000; a11_o2 += 1
+    else: a11_r3 += total_cost / 1000000; a11_o3 += 1
+    if a12_x == 0: a12_r1 += total_cost/1000000; a12_o1 += 1
+    elif a12_x == 1: a12_r2 += total_cost / 1000000; a12_o2 += 1
+    else: a12_r3 += total_cost / 1000000; a12_o3 += 1
+    if a14_x == 0: a14_r1 += total_cost/1000000; a14_o1 += 1
+    elif a14_x == 1: a14_r2 += total_cost / 1000000; a14_o2 += 1
+    else: a14_r3 += total_cost / 1000000; a14_o3 += 1
+    if a15_x == 0: a15_r1 += total_cost/1000000; a15_o1 += 1
+    elif a15_x == 1: a15_r2 += total_cost / 1000000; a15_o2 += 1
 
+    if iter == 0:
+        min_total_cost = total_cost
+        max_total_cost = total_cost
+    if total_cost < min_total_cost: min_total_cost = total_cost
+    if total_cost > max_total_cost: max_total_cost = total_cost
+
+a1_R1 = a1_r1/a1_o1; a1_R2 = a1_r2/a1_o2; a1_R3 = a1_r3/a1_o3
+a2_R1 = a2_r1/a2_o1; a2_R2 = a2_r2/a2_o2; a2_R3 = a2_r3/a2_o3
+a3_R1 = a3_r1/a3_o1; a3_R2 = a3_r2/a3_o2; a3_R3 = a3_r3/a3_o3
+a4_R1 = a4_r1/a4_o1; a4_R2 = a4_r2/a4_o2; a4_R3 = a4_r3/a4_o3
+a5_R1 = a5_r1/a5_o1; a5_R2 = a5_r2/a5_o2; a5_R3 = a5_r3/a5_o3
+a6_R1 = a6_r1/a6_o1; a6_R2 = a6_r2/a6_o2
+a7_R1 = a7_r1/a7_o1; a7_R2 = a7_r2/a7_o2; a7_R3 = a7_r3/a7_o3
+a8_R1 = a8_r1/a8_o1; a8_R2 = a8_r2/a8_o2; a8_R3 = a8_r3/a8_o3
+a9_R1 = a9_r1/a9_o1; a9_R2 = a9_r2/a9_o2; a9_R3 = a9_r3/a9_o3
+a10_R1 = a10_r1/a10_o1; a10_R2 = a10_r2/a10_o2; a10_R3 = a10_r3/a10_o3
+a11_R1 = a11_r1/a11_o1; a11_R2 = a11_r2/a11_o2; a11_R3 = a11_r3/a11_o3
+a12_R1 = a12_r1/a12_o1; a12_R2 = a12_r2/a12_o2; a12_R3 = a12_r3/a12_o3
+a14_R1 = a14_r1/a14_o1; a14_R2 = a14_r2/a14_o2; a14_R3 = a14_r3/a14_o3
+a15_R1 = a15_r1/a15_o1; a15_R2 = a15_r2/a15_o2
+
+R = [a1_R1, a1_R2, a1_R3, a2_R1, a2_R2, a2_R3, a3_R1, a3_R2, a3_R3, a4_R1, a4_R2, a4_R3, a5_R1, a5_R2, a5_R3, 
+     a6_R1, a6_R2, a7_R1, a7_R2, a7_R3, a8_R1, a8_R2, a8_R3, a9_R1, a9_R2, a9_R3, a10_R1, a10_R2, a10_R3, 
+     a11_R1, a11_R2, a11_R3, a12_R1, a12_R2, a12_R3, a14_R1, a14_R2, a14_R3, a15_R1, a15_R2]
+output = list(zip(R))
+df = pd.DataFrame(output, index=["a1_berm_0", "a1_berm_1", "a1_berm_2", "a2_piles_0", "a2_piles_1", "a2_piles_2", "a3_piers_0", "a3_piers_1", "a3_piers_2", "a4_abutment_base_0", "a4_abutment_base_1", "a4_abutment_base_2", "a5_abutment_0", "a5_abutment_1",
+    "a5_abutment_2", "a6_girders_0", "a6_girders_1", "a7_abutment_base2_0", "a7_abutment_base2_1", "a7_abutment_base2_2", "a8_abutment2_0", "a8_abutment2_1", "a8_abutment2_2", "a9_remove_berm_0", "a9_remove_berm_1",
+    "a9_remove_berm_2", "a10_berm2_0", "a10_berm2_1", "a10_berm2_2", "a11_piles2_0", "a11_piles2_1", "a11_piles2_2", "a12_piers2_0", "a12_piers2_1", "a12_piers2_2", "a14_remove_berm2_0", "a14_remove_berm2_1", "a14_remove_berm2_2",
+    "a15_deck_0", "a15_deck_1"], columns=["total_$ (m)"])
+df["reward"] = round(1 + ((df["total_$ (m)"] - df["total_$ (m)"].min()) * (-1))/(df["total_$ (m)"].max()-df["total_$ (m)"].min()), 3)
+print(df.to_string())
+print("Maximum cost", max_total_cost, "$")
+print("Minimum cost", min_total_cost, "$")
+df.to_csv('algo3.csv')
+print('Simulation is complete')
+print('-----------------------------------------------------------------------')
 print(bar)
