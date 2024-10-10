@@ -1,8 +1,32 @@
-number_of_MC_runs = 100000
-mode = 0 # "0" for Monte Carlo
+number_of_MC_runs = 2
+method_mode = 2 # "0" for Monte Carlo
          # "1" for Enumerated
          # "2" for Deterministic
-schedules_to_print = 10
+TW_mode = 0 # "0" for Deterministic TW
+            # "1" for Stochastic TW
+data_mode = 0 # "0" for short memory
+              # "1" for long memory
+# EMPTY LISTS FOR DATA MANAGEMENT
+a1_alternative_list, a1_duration_list, a1_cost_list, a1_crews_list = [], [], [], []
+a2_alternative_list, a2_duration_list, a2_cost_list, a2_crews_list = [], [], [], []
+a3_alternative_list, a3_duration_list, a3_cost_list, a3_crews_list = [], [], [], []
+a4_alternative_list, a4_duration_list, a4_cost_list, a4_crews_list = [], [], [], []
+a5_alternative_list, a5_duration_list, a5_cost_list, a5_crews_list = [], [], [], []
+a6_alternative_list, a6_duration_list, a6_cost_list, a6_crews_list = [], [], [], []
+a7_alternative_list, a7_duration_list, a7_cost_list, a7_crews_list = [], [], [], []
+a8_alternative_list, a8_duration_list, a8_cost_list, a8_crews_list = [], [], [], []
+a9_alternative_list, a9_duration_list, a9_cost_list, a9_crews_list = [], [], [], []
+a10_alternative_list, a10_duration_list, a10_cost_list, a10_crews_list = [], [], [], []
+a11_alternative_list, a11_duration_list, a11_cost_list, a11_crews_list = [], [], [], []
+a12_alternative_list, a12_duration_list, a12_cost_list, a12_crews_list = [], [], [], []
+a13_alternative_list, a13_duration_list, a13_cost_list, a13_crews_list = [], [], [], []
+a14_alternative_list, a14_duration_list, a14_cost_list, a14_crews_list = [], [], [], []
+a15_alternative_list, a15_duration_list, a15_cost_list, a15_crews_list = [], [], [], []
+tw0_duration_list, tw1_duration_list, tw3_duration_list, tw4_duration_list  = [], [], [], []
+gap1_list, gap2_list, gap3_list = [], [], []
+work_duration_list = []
+total_cost_list = []
+schedules_to_print = 9
 import itertools
 import datetime
 import gantt
@@ -143,15 +167,15 @@ alt_2 = [0,1]
 combinations = list(itertools.product(alt_3,alt_3,alt_3,alt_3,alt_3,alt_2,alt_3,alt_3,alt_3,alt_3,alt_3,alt_3,alt_3,alt_2))
 run = 0
 number_of_runs = 0
-if mode == 0:
+if method_mode == 0:
     number_of_runs = number_of_MC_runs
     print('Monte Carlo')
-elif mode == 1:
+elif method_mode == 1:
     number_of_runs = len(combinations)
     print('Enumerated')
-elif mode == 2:
-    number_of_runs = 1
+elif method_mode == 2:
     print('Deterministic')
+    number_of_runs = number_of_MC_runs#int(input())
 print('Running', format(number_of_runs, ',d'), 'combinations')
 bar = pyprind.ProgBar(number_of_runs, monitor=True, bar_char='■')
 a1_r1, a1_o1, a1_r2, a1_o2, a1_r3, a1_o3 = 0,0,0,0,0,0
@@ -166,6 +190,7 @@ a9_r1, a9_o1, a9_r2, a9_o2, a9_r3, a9_o3 = 0,0,0,0,0,0
 a10_r1, a10_o1, a10_r2, a10_o2, a10_r3, a10_o3 = 0,0,0,0,0,0
 a11_r1, a11_o1, a11_r2, a11_o2, a11_r3, a11_o3 = 0,0,0,0,0,0
 a12_r1, a12_o1, a12_r2, a12_o2, a12_r3, a12_o3 = 0,0,0,0,0,0
+a13_r1, a13_o1, a13_r2, a13_o2, a13_r3, a13_o3 = 0,0,0,0,0,0
 a14_r1, a14_o1, a14_r2, a14_o2, a14_r3, a14_o3 = 0,0,0,0,0,0
 a15_r1, a15_o1, a15_r2, a15_o2, a15_r3, a15_o3 = 0,0,0,0,0,0
 
@@ -173,36 +198,131 @@ for iter in range(number_of_runs):
     bar.update()  # progress update
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     '''TIME-WINDOWS'''
-    # TIME-WINDOW WINTER ROAD 2022-2023
-    tw0_start = datetime.date(2022, 12, random.randint(20, 25))
-    tw0_stop = datetime.date(2023, 4, random.randint(1, 5))
+    if TW_mode == 0:
+        tw0_start = datetime.date(2022, 12, 21)
+        tw0_stop = datetime.date(2023, 3, 31)
+        # TIME-WINDOW TEMPERATURE ABOVE ZERO 2023
+        tw1_start = datetime.date(2023, 4, 28)
+        tw1_stop = datetime.date(2023, 10, 5)
+        ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+        # TIME-WINDOW IN-RIVER ACTIVITY 2023
+        tw2_start = datetime.date(2023, 7, 16)
+        tw2_stop = datetime.date(2023, 9, 14)
+        # TIME-WINDOW WINTER ROAD 2023-2024
+        tw3_start = datetime.date(2023, 12, 21)
+        tw3_stop = datetime.date(2024, 3, 31)
+        ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+        # TIME-WINDOW TEMPERATURE ABOVE ZERO 2024
+        tw4_start = datetime.date(2024, 4, 28)
+        tw4_stop = datetime.date(2024, 10, 5)
+        ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+        # TIME-WINDOW IN-RIVER ACTIVITY 2024
+        tw5_start = datetime.date(2024, 7, 16)
+        tw5_stop = datetime.date(2024, 9, 14)
+    elif TW_mode == 1:
+        # TIME-WINDOW WINTER ROAD 2022-2023
+        # start (logistic)
+        loc = 20.63; scale = 3.40
+        sampled_day = int(np.random.logistic(loc, scale))
+        while sampled_day <= 0 or sampled_day > 62:
+            sampled_day = int(np.random.logistic(loc, scale))
+        if sampled_day <= 31: day = sampled_day; month = 12; year = 2022
+        else: day = sampled_day - 31; month = 1; year = 2023
+        tw0_start = datetime.date(year, month, day)
+        # stop (normal)
+        mu = 30.633; sigma = 10.471
+        sampled_day = int(np.random.normal(mu, sigma))
+        while sampled_day <= 0 or sampled_day > 61:
+            sampled_day = int(np.random.normal(mu, sigma))
+        if sampled_day <= 31: day = sampled_day; month = 3; year = 2023
+        else: day = sampled_day - 31; month = 4; year = 2023
+        tw0_stop = datetime.date(year, month, day)
+        ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+        # TIME-WINDOW TEMPERATURE ABOVE ZERO 2023
+        # start (gamma)
+        kay = 20.63; beta = 3.40
+        while True:
+            sampled_day = int(np.random.gamma(kay, beta))
+            while sampled_day <= 0 or sampled_day > 61:
+                sampled_day = int(np.random.logistic(loc, scale))
+            if sampled_day <= 30:
+                day = sampled_day; month = 4; year = 2023
+            else:
+                day = sampled_day - 30; month = 5; year = 2023
+            tw1_start = datetime.date(year, month, day)
+            if (tw1_start - tw0_stop).days >= 6: break # makes sure that a minimum of 6 days gap is maintained between the two time windows (based on 20 years of historical data)
+        # stop (logistic)
+        loc = 35.39; scale = 3.99
+        sampled_day = int(np.random.logistic(loc, scale))
+        while sampled_day <= 0 or sampled_day > 61:
+            sampled_day = int(np.random.logistic(loc, scale))
+        if sampled_day <= 30:
+            day = sampled_day; month = 9; year = 2023
+        else:
+            day = sampled_day - 30; month = 10; year = 2023
+        tw1_stop = datetime.date(year, month, day)
+        ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+        # TIME-WINDOW IN-RIVER ACTIVITY 2023
+        tw2_start = datetime.date(2023, 7, 16)
+        tw2_stop = datetime.date(2023, 9, 14)
+        ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+        # TIME-WINDOW WINTER ROAD 2023-2024
+        # start (logistic)
+        loc = 20.63; scale = 3.40
+        sampled_day = int(np.random.logistic(loc, scale))
+        while sampled_day <= 0 or sampled_day > 62:
+            sampled_day = int(np.random.logistic(loc, scale))
+        if sampled_day <= 31:
+            day = sampled_day; month = 12; year = 2023
+        else:
+            day = sampled_day - 31; month = 1; year = 2024
+        tw3_start = datetime.date(year, month, day)
+        # stop (normal)
+        mu = 30.633; sigma = 10.471
+        sampled_day = int(np.random.normal(mu, sigma))
+        while sampled_day <= 0 or sampled_day > 61:
+            sampled_day = int(np.random.normal(mu, sigma))
+        if sampled_day <= 31:
+            day = sampled_day; month = 3; year = 2024
+        else:
+            day = sampled_day - 31; month = 4; year = 2024
+        tw3_stop = datetime.date(year, month, day)
+        ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+        # TIME-WINDOW TEMPERATURE ABOVE ZERO 2024
+        # start (gamma)
+        kay = 20.63; beta = 3.40
+        while True:
+            sampled_day = int(np.random.gamma(kay, beta))
+            while sampled_day <= 0 or sampled_day > 61:
+                sampled_day = int(np.random.logistic(loc, scale))
+            if sampled_day <= 30:
+                day = sampled_day; month = 4; year = 2024
+            else:
+                day = sampled_day - 30; month = 5; year = 2024
+            tw4_start = datetime.date(year, month, day)
+            if (tw4_start - tw3_stop).days >= 6: break # makes sure that a minimum of 6 days gap is maintained between the two time windows (based on 20 years of historical data)
+        # stop (logistic)
+        loc = 35.39; scale = 3.99
+        sampled_day = int(np.random.logistic(loc, scale))
+        while sampled_day <= 0 or sampled_day > 61:
+            sampled_day = int(np.random.logistic(loc, scale))
+        if sampled_day <= 30:
+            day = sampled_day; month = 9; year = 2024
+        else:
+            day = sampled_day - 30; month = 10; year = 2024
+        tw4_stop = datetime.date(year, month, day)
+        ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+        # TIME-WINDOW IN-RIVER ACTIVITY 2024
+        tw5_start = datetime.date(2024, 7, 16)
+        tw5_stop = datetime.date(2024, 9, 14)
     tw0_duration = tw0_stop - tw0_start
-    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    # TIME-WINDOW TEMPERATURE ABOVE ZERO 2023
-    tw1_start = datetime.date(2023, 5, random.randint(1, 5))
-    tw1_stop = datetime.date(2023, 10, random.randint(15, 20))
     tw1_duration = tw1_stop - tw1_start
-    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    # TIME-WINDOW IN-RIVER ACTIVITY 2023
-    tw2_start = datetime.date(2023, 7, 16)
-    tw2_stop = datetime.date(2023, 9, 14)
     tw2_duration = tw2_stop - tw2_start
-    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    # TIME-WINDOW WINTER ROAD 2023-2024
-    tw3_start = datetime.date(2023, 12, random.randint(20, 25))
-    tw3_stop = datetime.date(2024, 4, random.randint(1, 5))
     tw3_duration = tw3_stop - tw3_start
-    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    # TIME-WINDOW TEMPERATURE ABOVE ZERO 2024
-    tw4_start = datetime.date(2024, 5, random.randint(1, 5))
-    tw4_stop = datetime.date(2024, 10, random.randint(15, 20))
     tw4_duration = tw4_stop - tw4_start
-    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    # TIME-WINDOW IN-RIVER ACTIVITY 2024
-    tw5_start = datetime.date(2024, 7, 16)
-    tw5_stop = datetime.date(2024, 9, 14)
     tw5_duration = tw5_stop - tw5_start
-    if mode == 0:
+
+    if method_mode == 0:
         a1_x = random.randint(0, len(a1_alternatives) - 1)
         a2_x = random.randint(0, len(a2_alternatives) - 1)
         a3_x = random.randint(0, len(a3_alternatives) - 1)
@@ -217,7 +337,7 @@ for iter in range(number_of_runs):
         a12_x = random.randint(0, len(a12_alternatives) - 1)
         a14_x = random.randint(0, len(a14_alternatives) - 1)
         a15_x = random.randint(0, len(a15_alternatives) - 1)
-    elif mode == 1:
+    elif method_mode == 1:
         a1_x = combinations[iter][0]
         a2_x = combinations[iter][1]
         a3_x = combinations[iter][2]
@@ -233,21 +353,21 @@ for iter in range(number_of_runs):
         #a13_x = combinations[iter][12]
         a14_x = combinations[iter][12]
         a15_x = combinations[iter][13]
-    elif mode == 2:
-        a1_x = 2
+    elif method_mode == 2:
+        a1_x = 0
         a2_x = 0
         a3_x = 0
-        a4_x = 2
-        a5_x = 2
-        a6_x = 1
-        a7_x = 1
+        a4_x = 0
+        a5_x = 0
+        a6_x = 0
+        a7_x = 0
         a8_x = 0
-        a9_x = 2
-        a10_x = 2
-        a11_x = 1
-        a12_x = 1
-        a14_x = 1
-        a15_x = 1
+        a9_x = 0
+        a10_x = 0
+        a11_x = 0
+        a12_x = 0
+        a14_x = 0
+        a15_x = 0
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # MOBILIZE JOB SITE
     a0_start = tw0_start
@@ -281,7 +401,7 @@ for iter in range(number_of_runs):
     # INSTALL PILES 1
     a2_working_hours = 8
     a2_quantity = 6200  # VLF (64 piles x 50')
-    a2_allowable_duration = (tw1_start - tw0_stop).days
+    a2_allowable_duration = (tw1_stop - tw0_stop).days
     a2_productivity = a2_alternatives[a2_x][0][0]
     a2_hourly_cost = 0
     for i in range(len(a2_alternatives[a2_x])):
@@ -573,8 +693,8 @@ for iter in range(number_of_runs):
     # INSTALL PILES 2
     a11_working_hours = 8
     a11_quantity = 6200  # VLF (64 piles x 50')
-    if a6_x == 1: a11_allowable_duration = (tw3_start - a10_stop).days # In case of incremental launching
-    else: a11_allowable_duration = (tw4_start - a10_stop).days
+    if a6_x == 1: a11_allowable_duration = (tw3_stop - a10_stop).days # In case of incremental launching
+    else: a11_allowable_duration = (tw5_start - a10_stop).days
     a11_productivity = a11_alternatives[a11_x][0][0]
     a11_hourly_cost = 0
     for i in range(len(a11_alternatives[a11_x])):
@@ -608,7 +728,7 @@ for iter in range(number_of_runs):
     a12_quantity_SFCA = 2 * 10979.19  # SFCA
     a12_quantity_Ton = 2 * 219.8  # Ton
     if a6_x == 0:
-        a12_allowable_duration = (tw5_start - tw4_start).days
+        a12_allowable_duration = (tw5_start - tw4_start).days/2
         a12_start = tw4_start
     else:
         a12_allowable_duration = (tw3_start - a11_stop).days
@@ -651,9 +771,16 @@ for iter in range(number_of_runs):
     if a6_x == 0:
         a13_x = 0
         a13_quantity = 1296  # Imperial ton (half of the bridge)
-        a13_crews = 2
-        a13_name = 'a13_install_girders_depends_of_[8, 12]'
+        a13_allowable_duration = (tw5_stop - a12_stop).days/2
         a13_productivity = a6_alternatives[a6_x][0][0]
+        a13_initial_duration = a13_quantity / a13_productivity / a13_working_hours
+        if a13_initial_duration < a13_allowable_duration:
+            a13_crews = 2
+            a13_duration = math.ceil(a13_initial_duration)
+        else:
+            a13_crews = math.ceil(a13_initial_duration / a13_allowable_duration)
+            a13_duration = math.ceil(a13_quantity / a13_productivity / a13_working_hours / a13_crews)
+        a13_name = 'a13_install_girders_depends_of_[8, 12]'
         a13_hourly_cost = 0
         for i in range(len(a6_alternatives[a6_x])):
             a13_hourly_cost += a6_alternatives[a6_x][i][1]
@@ -680,12 +807,11 @@ for iter in range(number_of_runs):
     # REMOVE BERM 2
     a14_working_hours = 8
     a14_quantity = 88752  # BCY
+    a14_name = 'a14_remove_berm'
     if a6_x == 1:  # In case of incremental launching
-        a14_name = 'a14_remove_berm'
         a14_allowable_duration = tw3_duration.days
         a14_start = tw3_start
     else:
-        a14_name = 'a14_remove_berm'
         a14_allowable_duration = (tw5_stop - a13_stop).days
         a14_start = a13_stop + datetime.timedelta(1)
     a14_productivity = min(a14_alternatives[a14_x][0][0], a14_alternatives[a14_x][2][0])
@@ -722,7 +848,7 @@ for iter in range(number_of_runs):
     a15_quantity_SFCA = 72656 + 2940 + 98  # SFCA of slab bottom plus edges
     a15_quantity_Ton = 625.9  # Ton
     if a6_x == 0:
-        a15_allowable_duration = (tw4_stop - a14_stop).days
+        a15_allowable_duration = (tw4_stop - a13_stop).days
         a15_start = a13_stop + datetime.timedelta(1)
     else:
         a15_allowable_duration = tw4_duration.days
@@ -1016,8 +1142,30 @@ for iter in range(number_of_runs):
     total_cost = round((a1_cost + a2_cost + a3_cost + a4_cost + a5_cost + a6_cost + a7_cost + a8_cost + a9_cost +
                         a10_cost + a11_cost + a12_cost + a13_cost + a14_cost + a15_cost + temp_cost + indirect_cost +
                         bonus), 0)
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    # Data collection
+    if data_mode == 1:
+        a1_alternative_list.append(a1_x), a1_duration_list.append(a1_duration), a1_cost_list.append(round(a1_cost, 0)), a1_crews_list.append(a1_crews)
+        a2_alternative_list.append(a2_x), a2_duration_list.append(a2_duration), a2_cost_list.append(round(a2_cost, 0)), a2_crews_list.append(a2_crews)
+        a3_alternative_list.append(a3_x), a3_duration_list.append(a3_duration), a3_cost_list.append(round(a3_cost, 0)), a3_crews_list.append(a3_crews)
+        a4_alternative_list.append(a4_x), a4_duration_list.append(a4_duration), a4_cost_list.append(round(a4_cost, 0)), a4_crews_list.append(a4_crews)
+        a5_alternative_list.append(a5_x), a5_duration_list.append(a5_duration), a5_cost_list.append(round(a5_cost, 0)), a5_crews_list.append(a5_crews)
+        a6_alternative_list.append(a6_x), a6_duration_list.append(a6_duration), a6_cost_list.append(round(a6_cost, 0)), a6_crews_list.append(a6_crews)
+        a7_alternative_list.append(a7_x), a7_duration_list.append(a7_duration), a7_cost_list.append(round(a7_cost, 0)), a7_crews_list.append(a7_crews)
+        a8_alternative_list.append(a8_x), a8_duration_list.append(a8_duration), a8_cost_list.append(round(a8_cost, 0)), a8_crews_list.append(a8_crews)
+        a9_alternative_list.append(a9_x), a9_duration_list.append(a9_duration), a9_cost_list.append(round(a9_cost, 0)), a9_crews_list.append(a9_crews)
+        a10_alternative_list.append(a10_x), a10_duration_list.append(a10_duration), a10_cost_list.append(round(a10_cost, 0)), a10_crews_list.append(a10_crews)
+        a11_alternative_list.append(a11_x), a11_duration_list.append(a11_duration), a11_cost_list.append(round(a11_cost, 0)), a11_crews_list.append(a11_crews)
+        a12_alternative_list.append(a12_x), a12_duration_list.append(a12_duration), a12_cost_list.append(round(a12_cost, 0)), a12_crews_list.append(a12_crews)
+        a13_alternative_list.append(a13_x), a13_duration_list.append(a13_duration), a13_cost_list.append(round(a13_cost, 0)), a13_crews_list.append(a13_crews)
+        a14_alternative_list.append(a14_x), a14_duration_list.append(a14_duration), a14_cost_list.append(round(a14_cost, 0)), a14_crews_list.append(a14_crews)
+        a15_alternative_list.append(a15_x), a15_duration_list.append(a15_duration), a15_cost_list.append(round(a15_cost, 0)), a15_crews_list.append(a15_crews)
+        work_duration_list.append(work_duration)
+        total_cost_list.append(total_cost)
+        tw0_duration_list.append(tw0_duration.days), tw1_duration_list.append(tw1_duration.days), tw3_duration_list.append(tw3_duration.days), tw4_duration_list.append(tw4_duration.days)
+        gap1_list.append((tw1_start-tw0_stop).days), gap2_list.append((tw3_start-tw1_stop).days), gap3_list.append((tw4_start-tw3_stop).days)
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # REWARD VALUES FOR EACH ALTERNATIVE
-    
     if a1_x == 0: a1_r1 += total_cost/1000000; a1_o1 += 1
     elif a1_x == 1: a1_r2 += total_cost / 1000000; a1_o2 += 1
     else: a1_r3 += total_cost / 1000000; a1_o3 += 1
@@ -1053,6 +1201,8 @@ for iter in range(number_of_runs):
     if a12_x == 0: a12_r1 += total_cost/1000000; a12_o1 += 1
     elif a12_x == 1: a12_r2 += total_cost / 1000000; a12_o2 += 1
     else: a12_r3 += total_cost / 1000000; a12_o3 += 1
+    if a13_x == 0: a13_r1 += total_cost/1000000; a13_o1 += 1
+    elif a13_x == 1: a13_r2 += total_cost / 1000000; a13_o2 += 1
     if a14_x == 0: a14_r1 += total_cost/1000000; a14_o1 += 1
     elif a14_x == 1: a14_r2 += total_cost / 1000000; a14_o2 += 1
     else: a14_r3 += total_cost / 1000000; a14_o3 += 1
@@ -1065,34 +1215,68 @@ for iter in range(number_of_runs):
     if total_cost < min_total_cost: min_total_cost = total_cost
     if total_cost > max_total_cost: max_total_cost = total_cost
 
-a1_R1 = a1_r1/a1_o1; a1_R2 = a1_r2/a1_o2; a1_R3 = a1_r3/a1_o3
-a2_R1 = a2_r1/a2_o1; a2_R2 = a2_r2/a2_o2; a2_R3 = a2_r3/a2_o3
-a3_R1 = a3_r1/a3_o1; a3_R2 = a3_r2/a3_o2; a3_R3 = a3_r3/a3_o3
-a4_R1 = a4_r1/a4_o1; a4_R2 = a4_r2/a4_o2; a4_R3 = a4_r3/a4_o3
-a5_R1 = a5_r1/a5_o1; a5_R2 = a5_r2/a5_o2; a5_R3 = a5_r3/a5_o3
-a6_R1 = a6_r1/a6_o1; a6_R2 = a6_r2/a6_o2
-a7_R1 = a7_r1/a7_o1; a7_R2 = a7_r2/a7_o2; a7_R3 = a7_r3/a7_o3
-a8_R1 = a8_r1/a8_o1; a8_R2 = a8_r2/a8_o2; a8_R3 = a8_r3/a8_o3
-a9_R1 = a9_r1/a9_o1; a9_R2 = a9_r2/a9_o2; a9_R3 = a9_r3/a9_o3
-a10_R1 = a10_r1/a10_o1; a10_R2 = a10_r2/a10_o2; a10_R3 = a10_r3/a10_o3
-a11_R1 = a11_r1/a11_o1; a11_R2 = a11_r2/a11_o2; a11_R3 = a11_r3/a11_o3
-a12_R1 = a12_r1/a12_o1; a12_R2 = a12_r2/a12_o2; a12_R3 = a12_r3/a12_o3
-a14_R1 = a14_r1/a14_o1; a14_R2 = a14_r2/a14_o2; a14_R3 = a14_r3/a14_o3
-a15_R1 = a15_r1/a15_o1; a15_R2 = a15_r2/a15_o2
+try:
+    a1_R1 = a1_r1/a1_o1; a1_R2 = a1_r2/a1_o2; a1_R3 = a1_r3/a1_o3
+    a2_R1 = a2_r1/a2_o1; a2_R2 = a2_r2/a2_o2; a2_R3 = a2_r3/a2_o3
+    a3_R1 = a3_r1/a3_o1; a3_R2 = a3_r2/a3_o2; a3_R3 = a3_r3/a3_o3
+    a4_R1 = a4_r1/a4_o1; a4_R2 = a4_r2/a4_o2; a4_R3 = a4_r3/a4_o3
+    a5_R1 = a5_r1/a5_o1; a5_R2 = a5_r2/a5_o2; a5_R3 = a5_r3/a5_o3
+    a6_R1 = a6_r1/a6_o1; a6_R2 = a6_r2/a6_o2
+    a7_R1 = a7_r1/a7_o1; a7_R2 = a7_r2/a7_o2; a7_R3 = a7_r3/a7_o3
+    a8_R1 = a8_r1/a8_o1; a8_R2 = a8_r2/a8_o2; a8_R3 = a8_r3/a8_o3
+    a9_R1 = a9_r1/a9_o1; a9_R2 = a9_r2/a9_o2; a9_R3 = a9_r3/a9_o3
+    a10_R1 = a10_r1/a10_o1; a10_R2 = a10_r2/a10_o2; a10_R3 = a10_r3/a10_o3
+    a11_R1 = a11_r1/a11_o1; a11_R2 = a11_r2/a11_o2; a11_R3 = a11_r3/a11_o3
+    a12_R1 = a12_r1/a12_o1; a12_R2 = a12_r2/a12_o2; a12_R3 = a12_r3/a12_o3
+    a13_R1 = a13_r1/a13_o1; a13_R2 = a13_r2/a13_o2
+    a14_R1 = a14_r1/a14_o1; a14_R2 = a14_r2/a14_o2; a14_R3 = a14_r3/a14_o3
+    a15_R1 = a15_r1/a15_o1; a15_R2 = a15_r2/a15_o2
 
-R = [a1_R1, a1_R2, a1_R3, a2_R1, a2_R2, a2_R3, a3_R1, a3_R2, a3_R3, a4_R1, a4_R2, a4_R3, a5_R1, a5_R2, a5_R3, 
+    R = [a1_R1, a1_R2, a1_R3, a2_R1, a2_R2, a2_R3, a3_R1, a3_R2, a3_R3, a4_R1, a4_R2, a4_R3, a5_R1, a5_R2, a5_R3,
      a6_R1, a6_R2, a7_R1, a7_R2, a7_R3, a8_R1, a8_R2, a8_R3, a9_R1, a9_R2, a9_R3, a10_R1, a10_R2, a10_R3, 
-     a11_R1, a11_R2, a11_R3, a12_R1, a12_R2, a12_R3, a14_R1, a14_R2, a14_R3, a15_R1, a15_R2]
-output = list(zip(R))
-df = pd.DataFrame(output, index=["a1_berm_0", "a1_berm_1", "a1_berm_2", "a2_piles_0", "a2_piles_1", "a2_piles_2", "a3_piers_0", "a3_piers_1", "a3_piers_2", "a4_abutment_base_0", "a4_abutment_base_1", "a4_abutment_base_2", "a5_abutment_0", "a5_abutment_1",
+     a11_R1, a11_R2, a11_R3, a12_R1, a12_R2, a12_R3, a13_R1, a13_R2, a14_R1, a14_R2, a14_R3, a15_R1, a15_R2]
+
+    output = list(zip(R))
+    df = pd.DataFrame(output, index=["a1_berm_0", "a1_berm_1", "a1_berm_2", "a2_piles_0", "a2_piles_1", "a2_piles_2", "a3_piers_0", "a3_piers_1", "a3_piers_2", "a4_abutment_base_0", "a4_abutment_base_1", "a4_abutment_base_2", "a5_abutment_0", "a5_abutment_1",
     "a5_abutment_2", "a6_girders_0", "a6_girders_1", "a7_abutment_base2_0", "a7_abutment_base2_1", "a7_abutment_base2_2", "a8_abutment2_0", "a8_abutment2_1", "a8_abutment2_2", "a9_remove_berm_0", "a9_remove_berm_1",
-    "a9_remove_berm_2", "a10_berm2_0", "a10_berm2_1", "a10_berm2_2", "a11_piles2_0", "a11_piles2_1", "a11_piles2_2", "a12_piers2_0", "a12_piers2_1", "a12_piers2_2", "a14_remove_berm2_0", "a14_remove_berm2_1", "a14_remove_berm2_2",
+    "a9_remove_berm_2", "a10_berm2_0", "a10_berm2_1", "a10_berm2_2", "a11_piles2_0", "a11_piles2_1", "a11_piles2_2", "a12_piers2_0", "a12_piers2_1", "a12_piers2_2", "a13_girders2_0", "a13_girders2_1", "a14_remove_berm2_0", "a14_remove_berm2_1", "a14_remove_berm2_2",
     "a15_deck_0", "a15_deck_1"], columns=["total_$ (m)"])
-df["reward"] = round(1 + ((df["total_$ (m)"] - df["total_$ (m)"].min()) * (-1))/(df["total_$ (m)"].max()-df["total_$ (m)"].min()), 3)
-print(df.to_string())
-print("Maximum cost", max_total_cost, "$")
-print("Minimum cost", min_total_cost, "$")
-df.to_csv('algo3.csv')
-print('Simulation is complete')
+    df["reward"] = round(1 + ((df["total_$ (m)"] - df["total_$ (m)"].min()) * (-1))/(df["total_$ (m)"].max()-df["total_$ (m)"].min()), 3)
+    print(df.to_string())
+    df.to_csv('algo3.csv')
+    print('Simulation is complete')
+except:
+    print('Not all the scenarios executed. Simulation is terminated. Increase number of runs.')
+    print('Limited results:')
+if data_mode == 1:
+    list = list(zip(a1_alternative_list, a1_duration_list, a1_cost_list, a1_crews_list, a2_alternative_list, a2_duration_list, a2_cost_list, a2_crews_list, a3_alternative_list, a3_duration_list, a3_cost_list, a3_crews_list, a4_alternative_list, a4_duration_list, a4_cost_list, a4_crews_list, a5_alternative_list, a5_duration_list, a5_cost_list, a5_crews_list, a6_alternative_list, a6_duration_list, a6_cost_list, a6_crews_list, a7_alternative_list, a7_duration_list, a7_cost_list, a7_crews_list, a8_alternative_list, a8_duration_list, a8_cost_list, a8_crews_list, a9_alternative_list, a9_duration_list, a9_cost_list, a9_crews_list, a10_alternative_list, a10_duration_list, a10_cost_list, a10_crews_list, a11_alternative_list, a11_duration_list, a11_cost_list, a11_crews_list, a12_alternative_list, a12_duration_list, a12_cost_list, a12_crews_list, a13_alternative_list, a13_duration_list, a13_cost_list, a13_crews_list, a14_alternative_list, a14_duration_list, a14_cost_list, a14_crews_list, a15_alternative_list, a15_duration_list, a15_cost_list, a15_crews_list, work_duration_list, total_cost_list, tw0_duration_list, tw1_duration_list, tw3_duration_list, tw4_duration_list, gap1_list, gap2_list, gap3_list))
+    df = pd.DataFrame(list, columns=["a1_berm", "a1_t", "a1_$", "a1_c",
+                                     "a2_piles", "a2_t", "a2_$", "a2_c",
+                                     "a3_piers", "a3_t", "a3_$", "a3_c",
+                                     "a4_abutment_base", "a4_t", "a4_$", "a4_c",
+                                     "a5_abutment", "a5_t", "a5_$", "a5_c",
+                                     "a6_girders", "a6_t", "a6_$", "a6_c",
+                                     "a7_abutment_base2", "a7_t", "a7_$", "a7_c",
+                                     "a8_abutment2", "a8_t", "a8_$", "a8_c",
+                                     "a9_remove_berm", "a9_t", "a9_$", "a9_c",
+                                     "a10_berm2", "a10_t", "a10_$", "a10_c",
+                                     "a11_piles2", "a11_t", "a11_$", "a11_c",
+                                     "a12_piers2", "a12_t", "a12_$", "a12_c",
+                                     "a13_girders2", "a13_t", "a13_$", "a13_c",
+                                     "a14_remove_berm2", "a14_t", "a14_$", "a14_c",
+                                     "a15_deck", "a15_t", "a15_$", "a15_c",
+                                     "total_t", "total_$", "tw0", "tw1", "tw3", "tw4", "gap1", "gap2", "gap3"])
+    df["tw_duration"] = df["tw0"] + df["tw1"] + df["tw3"] + df["tw4"]
+    df["gap_duration"] = df["gap1"] + df["gap2"] + df["gap3"]
+    print('Encountered', format(df.shape[0] - df.drop_duplicates(subset=['total_$']).shape[0], ',d'), 'cost duplicates')
+    print('and', format(df.shape[0] - df.drop_duplicates().shape[0], ',d'), 'tw duplicates')
+    print('Simulation efficiency is', round(100 - 100 / number_of_runs * (df.shape[0] - df.drop_duplicates(subset=['total_$']).shape[0]), 3), '%')
+    df = df.drop_duplicates()#subset=['total_$'])
+    print('Duplicates dropped')
+    if number_of_runs <= 100:
+        print(df.to_string())
+    df.to_csv('data.csv')
+print('Maximum cost', round(max_total_cost/1000000, 3), 'm $')
+print('Minimum cost', round(min_total_cost/1000000, 3), 'm $')
 print('-----------------------------------------------------------------------')
 print(bar)
