@@ -1,4 +1,4 @@
-number_of_MC_runs = 100000
+number_of_MC_runs = 10000
 method_mode = 0 # "0" for Monte Carlo
          # "1" for Enumerated
          # "2" for Deterministic
@@ -1121,9 +1121,9 @@ for iter in range(number_of_runs):
         schedule.add_task(bridge_side_2)
         schedule.make_svg_for_tasks(filename='run ' + str(iter+1) + '.svg',
                                 today=None,
-                                start=datetime.date(2022, 12, 1),
-                                end=datetime.date(2024, 11, 1),
-                                scale=gantt.DRAW_WITH_WEEKLY_SCALE)
+                                start=datetime.date(2022, 10, 1),
+                                end=datetime.date(2024, 12, 5),
+                                scale=gantt.DRAW_WITH_MONTHLY_SCALE)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # Cost of temporary facilities
     if a6_x == 0:
