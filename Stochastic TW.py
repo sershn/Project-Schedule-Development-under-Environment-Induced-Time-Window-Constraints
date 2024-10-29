@@ -1,8 +1,8 @@
-number_of_MC_runs = 100000
-method_mode = 0 # "0" for Monte Carlo
+number_of_MC_runs = 10
+method_mode = 2 # "0" for Monte Carlo
          # "1" for Enumerated
          # "2" for Deterministic
-TW_mode = 1 # "0" for Deterministic TW
+TW_mode = 0 # "0" for Deterministic TW
             # "1" for Stochastic TW
 data_mode = 1 # "0" for short memory
               # "1" for long memory
@@ -665,7 +665,7 @@ for iter in range(number_of_runs):
     a10_working_hours = 8
     a10_quantity = 88752  # BCY
     if a6_x == 1: a10_allowable_duration = tw2_duration.days - a7_duration # In case of incremental launching
-    else: a10_allowable_duration = tw3_duration.days - a7_duration
+    else: a10_allowable_duration = tw3_duration.days - a9_duration
     a10_productivity = min(a10_alternatives[a10_x][0][0], a10_alternatives[a10_x][2][0])
     a10_truck_crews = math.ceil(a10_productivity / (a10_alternatives[a10_x][1][0] / 1.25))  # 1.25 - bank to loose conversion factor
     a10_hourly_cost = (a10_alternatives[a10_x][0][1] + a10_truck_crews * a10_alternatives[a10_x][1][1] + a10_alternatives[a10_x][2][1])
@@ -1123,7 +1123,7 @@ for iter in range(number_of_runs):
                                 today=None,
                                 start=datetime.date(2022, 10, 1),
                                 end=datetime.date(2024, 12, 5),
-                                scale=gantt.DRAW_WITH_MONTHLY_SCALE)
+                                scale=gantt.DRAW_WITH_WEEKLY_SCALE)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # Cost of temporary facilities
     if a6_x == 0:

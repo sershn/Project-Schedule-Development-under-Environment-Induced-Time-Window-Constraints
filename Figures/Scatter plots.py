@@ -4,8 +4,10 @@ import matplotlib.pyplot as plt
 from scipy.stats import gaussian_kde
 
 # Load your dataset (replace with your own data)
-data = pd.read_csv('../gpt data 10m runs.csv')
-time_window = 'total_t'
+#data = pd.read_csv('../gpt data 10m runs.csv')
+data = pd.read_csv('../data1.csv')
+data = data.sample(frac=0.2, random_state=42)
+time_window = 'tw3'
 # Perform kernel density estimation for the scatter plot (heatmap)
 total_cost_clean = data['total_$']
 xy = np.vstack([data[time_window], total_cost_clean])
@@ -13,13 +15,13 @@ z = gaussian_kde(xy)(xy)
 font = 10
 # Create the scatter plot with density (heatmap overlay)
 plt.figure(figsize=(7, 5))
-plt.scatter(data[time_window], total_cost_clean, c=z, s=20, cmap='hot', alpha=0.7, marker='x')
-x1 = [650,658]
-y1 = [28454000,28454000]
-x2 = [654,654]
-y2 = [28100000,28808000]
-plt.plot(x1,y1, c='blue', label='Deterministic TW')
-plt.plot(x2,y2, c='blue')
+plt.scatter(data[time_window], total_cost_clean, c=z, s=20, cmap='plasma', alpha=0.7, marker='x')
+x1 = [96,104]
+y1 = [28499000,28499000]
+x2 = [100,100]
+y2 = [28100000,28900000]
+plt.plot(x1,y1, c='g', label='Deterministic TW')
+plt.plot(x2,y2, c='g')
 plt.legend(loc='upper right', fontsize=font)
 #cmap='viridis'
 #cmap='plasma'
