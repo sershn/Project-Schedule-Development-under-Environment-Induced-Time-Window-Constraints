@@ -1,8 +1,8 @@
-number_of_MC_runs = 10
+number_of_MC_runs = 100000
 method_mode = 2 # "0" for Monte Carlo
          # "1" for Enumerated
          # "2" for Deterministic
-TW_mode = 0 # "0" for Deterministic TW
+TW_mode = 1 # "0" for Deterministic TW
             # "1" for Stochastic TW
 data_mode = 1 # "0" for short memory
               # "1" for long memory
@@ -23,7 +23,8 @@ a13_alternative_list, a13_duration_list, a13_cost_list, a13_crews_list = [], [],
 a14_alternative_list, a14_duration_list, a14_cost_list, a14_crews_list = [], [], [], []
 a15_alternative_list, a15_duration_list, a15_cost_list, a15_crews_list = [], [], [], []
 tw0_duration_list, tw1_duration_list, tw3_duration_list, tw4_duration_list  = [], [], [], []
-gap1_list, gap2_list, gap3_list = [], [], []
+tw0_st_list, tw1_st_list, tw3_st_list, tw4_st_list = [], [], [], []
+tw0_sp_list, tw1_sp_list, tw3_sp_list, tw4_sp_list = [], [], [], []
 work_duration_list = []
 total_cost_list = []
 schedules_to_print = 9
@@ -1163,7 +1164,8 @@ for iter in range(number_of_runs):
         work_duration_list.append(work_duration)
         total_cost_list.append(total_cost)
         tw0_duration_list.append(tw0_duration.days), tw1_duration_list.append(tw1_duration.days), tw3_duration_list.append(tw3_duration.days), tw4_duration_list.append(tw4_duration.days)
-        gap1_list.append((tw1_start-tw0_stop).days), gap2_list.append((tw3_start-tw1_stop).days), gap3_list.append((tw4_start-tw3_stop).days)
+        tw0_st_list.append(tw0_start.timetuple().tm_yday), tw0_sp_list.append(tw0_stop.timetuple().tm_yday), tw1_st_list.append(tw1_start.timetuple().tm_yday), tw1_sp_list.append(tw1_stop.timetuple().tm_yday)
+        tw3_st_list.append(tw3_start.timetuple().tm_yday), tw3_sp_list.append(tw3_stop.timetuple().tm_yday), tw4_st_list.append(tw4_start.timetuple().tm_yday), tw4_sp_list.append(tw4_stop.timetuple().tm_yday)
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # REWARD VALUES FOR EACH ALTERNATIVE
     if a1_x == 0: a1_r1 += total_cost/1000000; a1_o1 += 1
@@ -1261,7 +1263,8 @@ if data_mode == 1:
                     a12_crews_list, a13_alternative_list, a13_duration_list, a13_cost_list, a13_crews_list,
                     a14_alternative_list, a14_duration_list, a14_cost_list, a14_crews_list, a15_alternative_list,
                     a15_duration_list, a15_cost_list, a15_crews_list, work_duration_list, total_cost_list,
-                    tw0_duration_list, tw1_duration_list, tw3_duration_list, tw4_duration_list, gap1_list, gap2_list, gap3_list))
+                    tw0_duration_list, tw1_duration_list, tw3_duration_list, tw4_duration_list, tw0_st_list, tw0_sp_list,
+                    tw1_st_list, tw1_sp_list, tw3_st_list, tw3_sp_list, tw4_st_list, tw4_sp_list,))
     df = pd.DataFrame(list, columns=["a1_berm", "a1_t", "a1_$", "a1_c",
                                      "a2_piles", "a2_t", "a2_$", "a2_c",
                                      "a3_piers", "a3_t", "a3_$", "a3_c",
@@ -1277,9 +1280,8 @@ if data_mode == 1:
                                      "a13_girders2", "a13_t", "a13_$", "a13_c",
                                      "a14_remove_berm2", "a14_t", "a14_$", "a14_c",
                                      "a15_deck", "a15_t", "a15_$", "a15_c",
-                                     "total_t", "total_$", "tw0", "tw1", "tw3", "tw4", "gap1", "gap2", "gap3"])
-    df["tw_duration"] = df["tw0"] + df["tw1"] + df["tw3"] + df["tw4"]
-    df["gap_duration"] = df["gap1"] + df["gap2"] + df["gap3"]
+                                     "total_t", "total_$", "tw0", "tw1", "tw3", "tw4", "tw0_st", "tw0_sp",
+                                     "tw1_st", "tw1_sp", "tw3_st", "tw3_sp", "tw4_st", "tw4_sp"])
     print('Encountered', format(df.shape[0] - df.drop_duplicates(subset=['total_$']).shape[0], ',d'), 'cost duplicates')
     print('and', format(df.shape[0] - df.drop_duplicates().shape[0], ',d'), 'tw duplicates')
     print('Simulation efficiency is', round(100 - 100 / number_of_runs * (df.shape[0] - df.drop_duplicates(subset=['total_$']).shape[0]), 3), '%')
